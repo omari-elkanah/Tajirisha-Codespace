@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tajirisha - Financial Literacy Lessons</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#46ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#142210",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', "Noto Sans", sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#131811] dark:text-white min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#e2e8e0] dark:border-[#2d3a28] bg-white dark:bg-[#1a2e15] px-6 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-[#131811] dark:text-white">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight">Tajirisha</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+  <a href="{{ url_for('lessons') }}" class="text-primary text-sm font-semibold border-b-2 border-primary">Learning Hub</a>
+  <a href="{{ url_for('budget') }}" class="text-sm font-medium hover:text-primary transition-colors">Budget</a>
+  <a href="{{ url_for('community') }}" class="text-sm font-medium hover:text-primary transition-colors">Community</a>
+  <a href="{{ url_for('simulation') }}" class="text-sm font-medium hover:text-primary transition-colors">Simulation</a>
+  <a href="{{ url_for('settings') }}" class="text-sm font-medium hover:text-primary transition-colors">Settings</a>
+  <a href="{{ url_for('savings') }}" class="text-sm font-medium hover:text-primary transition-colors">Savings</a>
+  <a href="{{ url_for('dashboard') }}" class="text-sm font-medium hover:text-primary transition-colors">Dashboard</a>
+  <div class="flex justify-center">
+  <a href="{{ url_for('logout') }}"
+     class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors">
+     Logout
+  </a>
+</div>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-4">
+<div class="bg-gradient-to-br from-primary to-[#38c40e] p-4 rounded-xl text-white">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[32px]">local_fire_department</span>
+<div>
+<p class="text-xs font-bold uppercase opacity-80">Learning Streak</p>
+<p id="streakDisplay" class="text-xl font-black">0 Days</p>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-72 bg-white dark:bg-[#1a2e15] border-r border-[#e2e8e0] dark:border-[#2d3a28] flex-col hidden md:flex">
+<div class="p-6">
+<h3 class="text-xs font-semibold text-[#6b8961] uppercase tracking-wider mb-4">Course Progress</h3>
+<div class="w-full bg-[#f1f4f0] dark:bg-[#24361f] rounded-full h-2 mb-2">
+<div class="bg-primary h-2 rounded-full progress-bar-fill" style="width: 0%"></div>
+</div>
+<p class="text-xs text-[#6b8961] progress-text">0 of 9 Modules Completed</p>
+</div>
+<nav class="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary group cursor-pointer" onclick="loadModule(0)"><span class="material-symbols-outlined text-[20px]">wallet</span><p class="text-sm font-semibold">1. Basic Budgeting</p><span class="material-symbols-outlined text-[16px] ml-auto">check_circle</span></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(1)"><span class="material-symbols-outlined text-[20px]">account_balance</span><p class="text-sm font-medium">2. Sacco Savings</p></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(2)"><span class="material-symbols-outlined text-[20px]">smartphone</span><p class="text-sm font-medium">3. Digital Credit & Apps</p></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(3)"><span class="material-symbols-outlined text-[20px]">trending_up</span><p class="text-sm font-medium">4. NSE Stock Basics</p></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(4)"><span class="material-symbols-outlined text-[20px]">security</span><p class="text-sm font-medium">5. Insurance 101</p></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(5)"><span class="material-symbols-outlined text-[20px]">trending_down</span><p class="text-sm font-medium">6. Debt Management</p></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(6)"><span class="material-symbols-outlined text-[20px]">savings</span><p class="text-sm font-medium">7. Emergency Funds</p></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(7)"><span class="material-symbols-outlined text-[20px]">trending_up</span><p class="text-sm font-medium">8. Investing for Future</p></div>
+<div class="sidebar-module flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f1f4f0] dark:hover:bg-[#24361f] transition-colors cursor-pointer text-[#6b8961]" onclick="loadModule(8)"><span class="material-symbols-outlined text-[20px]">emoji_events</span><p class="text-sm font-medium">9. Financial Goals & Planning</p></div>
+</nav>
+<div class="p-4 border-t border-[#e2e8e0] dark:border-[#2d3a28]">
+<div class="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/20"><div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-primary">emoji_events</span><span class="text-xs font-bold uppercase text-primary">Achievement</span></div><p class="text-xs text-[#131811] dark:text-[#d1d5db]">Complete all modules to unlock mastery badges!*Coming Soon</p></div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-white dark:bg-[#142210] overflow-hidden">
+<!-- Header Section -->
+<div class="px-8 py-6 border-b border-[#e2e8e0] dark:border-[#2d3a28] flex items-center justify-between">
+<div>
+  <div class="flex items-center gap-2 text-xs font-medium text-[#6b8961] mb-1">
+    <span>Modules</span>
+    <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+    <span class="breadcrumb-module">Basic Budgeting</span>
+  </div>
+  <h1 class="module-title text-2xl font-bold">Understanding Personal Budgeting</h1>
+</div>
+<div class="flex gap-3">
+  <div class="flex h-8 items-center justify-center gap-x-2 rounded-lg bg-primary/10 px-3 border border-primary/20">
+    <span class="material-symbols-outlined text-primary text-[18px]">signal_cellular_alt</span>
+    <p class="module-difficulty text-primary text-xs font-bold uppercase">Beginner</p>
+  </div>
+  <div class="flex h-12 items-center justify-center gap-x-2 rounded-lg bg-[#f1f4f0] dark:bg-[#24361f] px-3">
+    <span class="material-symbols-outlined text-[#6b8961] text-[18px]">schedule</span>
+    <p class="module-duration text-[#6b8961] text-xs font-bold uppercase">15 min read</p>
+  </div>
+</div>
+</div>
+<!-- Scrollable Lesson Content -->
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="lesson-content max-w-[800px] mx-auto px-8 py-16">
+<article class="prose prose-slate max-w-none dark:prose-invert">
+<!-- Dynamic content injected here by JavaScript -->
+</article>
+</div>
+<div id="quizContainer" class="max-w-[800px] mx-auto px-8 mt-12 pb-16">
+<!-- Quiz injected by JavaScript -->
+</div>
+</div>
+
+<!-- Action Footer -->
+<footer class="px-8 py-6 border-t border-[#e2e8e0] dark:border-[#2d3a28] flex items-center justify-between bg-white dark:bg-[#1a2e15]">
+  <button id="prevModuleBtn" class="flex items-center gap-2 text-sm font-bold text-[#6b8961] hover:text-[#131811] dark:hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+    <span class="material-symbols-outlined">arrow_back</span>
+    Previous Module
+  </button>
+  <div class="flex gap-4">
+    <button id="submitAnswerBtn" type="button" class="px-6 py-2.5 bg-[#f1f4f0] dark:bg-[#24361f] text-sm font-bold rounded-lg hover:bg-[#e2e8e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+      Submit Answer
+    </button>
+    <button id="nextModuleBtn" disabled class="px-8 py-2.5 bg-primary text-[#131811] text-sm font-bold rounded-lg shadow-sm opacity-50 cursor-not-allowed flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed enabled:opacity-100 enabled:cursor-pointer">
+      Next Lesson
+      <span class="material-symbols-outlined">arrow_forward</span>
+    </button>
+  </div>
+</footer>
+</main>
+<!-- Right Sidebar -->
+<aside class="w-80 bg-[#f9faf9] dark:bg-[#1a2e15] border-l border-[#e2e8e0] dark:border-[#2d3a28] hidden xl:flex flex-col p-6 gap-6 sticky top-0 max-h-screen overflow-y-auto custom-scrollbar">
+  <div class="bg-white dark:bg-[#24361f] p-6 rounded-2xl shadow-sm border border-[#e2e8e0] dark:border-[#2d3a28]">
+    <h3 class="text-sm font-bold mb-4">Current Score</h3>
+    <div class="relative flex items-center justify-center mb-4">
+      <svg class="w-32 h-32 transform -rotate-90">
+        <circle class="text-[#f1f4f0] dark:text-[#142210]" cx="64" cy="64" r="58" fill="transparent" stroke="currentColor" stroke-width="8"></circle>
+        <circle id="progressCircle" class="text-primary" cx="64" cy="64" r="58" fill="transparent" stroke="currentColor" stroke-width="8" stroke-linecap="round"></circle>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <span id="scorePercentage" class="text-2xl font-black">0%</span>
+        <span class="text-[10px] text-[#6b8961] uppercase font-bold">Start</span>
+      </div>
+    </div>
+    <p id="scoreSummary" class="text-center text-xs text-[#6b8961]">Start the quiz to earn points!</p>
+  </div>
+</aside>
+</div>
+<!-- Toast Notification -->
+<div id="toastNotification" class="fixed bottom-6 right-6 bg-white dark:bg-[#24361f] border border-[#e2e8e0] dark:border-[#2d3a28] rounded-lg shadow-lg p-4 hidden flex items-center gap-3 z-50 max-w-sm animate-fadeIn">
+  <span id="toastIcon" class="material-symbols-outlined text-[20px]"></span>
+  <p id="toastMessage" class="text-sm font-medium"></p>
+</div>
+
+<script>
+// MODULE DATA
+const modules = [
+  {id: 'module-0', title: 'Understanding Personal Budgeting', breadcrumb: 'Basic Budgeting', difficulty: 'Beginner', duration: '15 min read', content: '<h2 class="text-xl font-bold mb-4">The 50/30/20 Rule: Your Path to Smart Budgeting</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">Budgeting isn\'t complicated. The <strong>50/30/20 rule</strong> helps allocate your income wisely:</p><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>50% Needs:</strong> Rent, utilities, food, transport</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>30% Wants:</strong> Entertainment, dining out, hobbies</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>20% Savings & Debt:</strong> Emergency funds, investing, debt repayment</span></li></ul><div class="bg-[#f8faf7] dark:bg-[#1a2e15] border-l-4 border-primary p-6 rounded-r-xl mb-8"><h4 class="font-bold text-sm uppercase text-primary mb-2 flex items-center gap-2"><span class="material-symbols-outlined">lightbulb</span>Real Life Example</h4><p class="text-sm italic text-[#4b5563] dark:text-[#9ca3af]">With KES 50,000 monthly income: KES 25,000 (50%) for rent/food/transport, KES 15,000 (30%) for entertainment, KES 10,000 (20%) for Sacco & emergency fund.</p></div><h3 class="text-lg font-bold mb-3">Making It Work</h3><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">When housing costs more, adjust the rule. The key is being intentional about every shilling.</p>', quiz: {question: 'According to 50/30/20, where should "Sacco Savings" fall?', options: ['50% Needs', '30% Wants', '20% Savings/Debt'], correct: 2}},
+  {id: 'module-1', title: 'Sacco Savings Groups', breadcrumb: 'Sacco Savings', difficulty: 'Beginner', duration: '12 min read', content: '<h2 class="text-xl font-bold mb-4">Saving Together, Growing Together</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6"><strong>Sacco</strong> stands for <strong>Savings and Credit Co-operative.</strong> It\'s a group pooling money to save and loan at fair rates.</p><h3 class="text-lg font-bold mb-3">How Does It Work?</h3><ol class="space-y-3 mb-8 list-decimal list-inside"><li><span class="ml-2">Join a Sacco (workplace, church, or community)</span></li><li><span class="ml-2">Contribute monthly (e.g., KES 1,000)</span></li><li><span class="ml-2">Earn interest on your savings</span></li><li><span class="ml-2">Borrow 3-5x your savings at 15-20% interest</span></li></ol><h3 class="text-lg font-bold mb-3">Why Better Than Banks?</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Lower interest rates (15-20% vs 25-30%)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Easier loan approval</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Your savings stay locked (prevents impulsive spending)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Community support</span></li></ul><div class="bg-[#f8faf7] dark:bg-[#1a2e15] border-l-4 border-primary p-6 rounded-r-xl mb-8"><h4 class="font-bold text-sm uppercase text-primary mb-2 flex items-center gap-2"><span class="material-symbols-outlined">lightbulb</span>Success Story</h4><p class="text-sm italic text-[#4b5563] dark:text-[#9ca3af]">Mary contributed KES 2,000/month. After 2 years, she had KES 50,000 + interest and borrowed KES 150,000 to start a business!</p></div>', quiz: {question: 'What does Sacco stand for?', options: ['Savings Account and Credit Co-operative', 'Savings and Credit Co-operative', 'Social and Community Capital Organization'], correct: 1}},
+  {id: 'module-2', title: 'Digital Credit & Apps', breadcrumb: 'Digital Credit & Apps', difficulty: 'Beginner', duration: '13 min read', content: '<h2 class="text-xl font-bold mb-4">Digital Credit: Convenience vs. Responsibility</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">In Kenya, getting a loan is as easy as opening an app. M-Pesa Loan, Fulliza, Branch, and Tala make credit accessible instantly.</p><h3 class="text-lg font-bold mb-3">Popular Services</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">smartphone</span><span><strong>M-Pesa Loan:</strong> 10-20% interest</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">smartphone</span><span><strong>Fulliza:</strong> Up to KES 300,000 (14% flat)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">smartphone</span><span><strong>Branch:</strong> For salaried workers (9% monthly)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">smartphone</span><span><strong>Tala:</strong> KES 500-300,000 (10-50% interest)</span></li></ul><h3 class="text-lg font-bold mb-3">The Real Risks</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>High interest rates (50%+ annually)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Dependency on repeated borrowing</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Debt trap: borrowing to repay loans</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Privacy concerns (apps access your contacts)</span></li></ul><h3 class="text-lg font-bold mb-3">Smart Rules</h3><ol class="space-y-3 mb-8 list-decimal list-inside"><li><span class="ml-2">Only borrow for income-generating purposes</span></li><li><span class="ml-2">Repay within 1-2 months</span></li><li><span class="ml-2">Compare interest rates</span></li><li><span class="ml-2">Avoid emergency borrowing—build an emergency fund instead</span></li></ol>', quiz: {question: 'What is the main risk of digital credit?', options: ['Getting trapped in a debt cycle', 'Losing your phone data', 'Being charged upfront fees'], correct: 0}},
+  {id: 'module-3', title: 'NSE Stock Basics', breadcrumb: 'NSE Stock Basics', difficulty: 'Intermediate', duration: '18 min read', content: '<h2 class="text-xl font-bold mb-4">Understanding the NSE: Own Kenya\'s Future</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">The <strong>Nairobi Securities Exchange (NSE)</strong> is where stocks are bought and sold. Own shares in Safaricom, Equity Bank, Kenya Airways, and more.</p><h3 class="text-lg font-bold mb-3">What Does Owning Stock Mean?</h3><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">When you buy a stock, you own a percentage of that company. If Safaricom grows, your shares increase in value.</p><h3 class="text-lg font-bold mb-3">Getting Started</h3><ol class="space-y-3 mb-8 list-decimal list-inside"><li><span class="ml-2">Open account with licensed broker (Easy Equities, Genghis Capital)</span></li><li><span class="ml-2">Fund account (minimum KES 5,000-10,000)</span></li><li><span class="ml-2">Research companies</span></li><li><span class="ml-2">Buy blue-chip stocks</span></li><li><span class="ml-2">Monitor and reinvest dividends</span></li></ol><h3 class="text-lg font-bold mb-3">Blue-Chip Stocks</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Safaricom:</strong> Dominant telecom</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Equity Bank:</strong> Major commercial bank</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>EABL:</strong> Stable consumer goods</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Kenya Power:</strong> Essential utility</span></li></ul><h3 class="text-lg font-bold mb-3">Key Concepts</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Dividend:</strong> Annual profit shared with shareholders</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Capital gains:</strong> Profit from selling at higher price</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>P/E ratio:</strong> How expensive a stock is</span></li></ul><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">Stock investing is long-term. Commit 5+ years for significant returns.</p>', quiz: {question: 'What does owning a stock mean?', options: ['You own a bond issued by the company', 'You own a small percentage of the company', 'You are owed money by the company'], correct: 1}},
+  {id: 'module-4', title: 'Insurance 101', breadcrumb: 'Insurance 101', difficulty: 'Intermediate', duration: '14 min read', content: '<h2 class="text-xl font-bold mb-4">Insurance: Your Financial Safety Net</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6"><strong>Insurance</strong> protects you from financial disaster when emergencies occur—illness, accidents, theft, or income loss.</p><h3 class="text-lg font-bold mb-3">Types Kenyans Need</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">security</span><span><strong>Health:</strong> NHIF (govt) or private insurance</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">security</span><span><strong>Life:</strong> KES 100,000-1M coverage for family</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">security</span><span><strong>Car:</strong> Mandatory if you own a vehicle</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">security</span><span><strong>Home:</strong> Protects property from theft/fire</span></li></ul><h3 class="text-lg font-bold mb-3">How Insurance Works</h3><ol class="space-y-3 mb-8 list-decimal list-inside"><li><span class="ml-2">Pay monthly/annual premium</span></li><li><span class="ml-2">Insurer pools money from thousands</span></li><li><span class="ml-2">When someone claims, pooled funds pay them</span></li><li><span class="ml-2">Insurer keeps remaining funds</span></li></ol><div class="bg-[#f8faf7] dark:bg-[#1a2e15] border-l-4 border-primary p-6 rounded-r-xl mb-8"><h4 class="font-bold text-sm uppercase text-primary mb-2 flex items-center gap-2"><span class="material-symbols-outlined">lightbulb</span>Real Scenario</h4><p class="text-sm italic text-[#4b5563] dark:text-[#9ca3af]">James, 28, earns KES 60,000/month. He buys KES 500,000 life insurance for KES 2,000/year. If he passes away, his family gets KES 500,000 to pay bills.</p></div><h3 class="text-lg font-bold mb-3">Tips</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Start with health insurance (NHIF KES 500-1,500/year)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Get life insurance young (premiums increase with age)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Only insure what matters (income, home, car)</span></li></ul>', quiz: {question: 'What is the main purpose of insurance?', options: ['To make a profit on your money', 'To provide protection against financial losses', 'To replace your savings'], correct: 1}},
+  {id: 'module-5', title: 'Debt Management', breadcrumb: 'Debt Management', difficulty: 'Intermediate', duration: '16 min read', content: '<h2 class="text-xl font-bold mb-4">Good Debt vs. Bad Debt</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">Not all debt is bad. Strategic debt accelerates wealth building. The key: borrow for income-generating assets, not consumption.</p><h3 class="text-lg font-bold mb-3">Good Debt Examples</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Student Loan:</strong> Borrow for education. Earn KES 100,000/month instead of KES 30,000</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Mortgage:</strong> Build equity while paying rent to yourself</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Business Loan:</strong> Potential unlimited income</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Sacco Loan:</strong> Borrow at 15% to earn 50%+ profit</span></li></ul><h3 class="text-lg font-bold mb-3">Bad Debt Examples</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">trending_down</span><span>Credit card debt for clothes and dining</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">trending_down</span><span>Personal loans (Fulliza) for holidays</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">trending_down</span><span>Car loans (leasing costs exceed value)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">trending_down</span><span>Loans for gambling or status symbols</span></li></ul><h3 class="text-lg font-bold mb-3">Debt Ratios</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span>Mortgage: Max 30% of gross income</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span>All debt combined: Max 40%</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span>Consumer debt: Avoid if possible</span></li></ul><h3 class="text-lg font-bold mb-3">Repayment Strategies</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Debt Snowball:</strong> Pay smallest first (psychological wins)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Debt Avalanche:</strong> Pay highest interest first (mathematically optimal)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>51% Rule:</strong> Spend 51% on debt repayment (clear fast)</span></li></ul><h3 class="text-lg font-bold mb-3">Warning Signs</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Loans >40% of income</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Taking new loans to repay old ones</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Missing payment deadlines</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Credit rating declining</span></li></ul>', quiz: {question: 'Which is an example of good debt?', options: ['A loan to buy a TV', 'A student loan for education', 'A personal loan for a vacation'], correct: 1}},
+  {id: 'module-6', title: 'Emergency Funds', breadcrumb: 'Emergency Funds', difficulty: 'Beginner', duration: '11 min read', content: '<h2 class="text-xl font-bold mb-4">Your Financial Airbag: Emergency Fund</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">Job loss. Medical emergency. Car breakdown. An <strong>emergency fund</strong> is money saved for unexpected expenses.</p><h3 class="text-lg font-bold mb-3">Why You Need One</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Kendi lost her job—3 months emergency fund kept her afloat</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Ahmad\'s car broke down—KES 30,000 fund covered repairs</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span>Grace needed KES 50,000 procedure—avoided expensive digital loans</span></li></ul><h3 class="text-lg font-bold mb-3">How Much to Save?</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Students:</strong> KES 5,000-10,000 (1 month essentials)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Salary earners:</strong> KES 30,000-50,000 (3 months)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Stable job:</strong> KES 100,000-150,000 (6 months)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Self-employed:</strong> KES 200,000+ (12+ months)</span></li></ul><h3 class="text-lg font-bold mb-3">Where to Keep It</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Best:</strong> Sacco (8-10% interest, earning while safe)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Good:</strong> Money market (4-6% interest, accessible)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Acceptable:</strong> Savings account (liquid, low interest)</span></li></ul><h3 class="text-lg font-bold mb-3">Building Month by Month</h3><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">Save KES 2,000/month from KES 50,000 income:</p><ul class="space-y-2 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">done</span><span>Month 12: KES 28,000 (nearly 1 month covered)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">done</span><span>Month 24: KES 56,000 (1+ months covered)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">done</span><span>Month 36: KES 84,000 (1.5+ months covered)</span></li></ul>', quiz: {question: 'How much should a student save as emergency fund?', options: ['KES 1,000-5,000', 'KES 5,000-10,000', 'KES 50,000+'], correct: 1}},
+  {id: 'module-7', title: 'Investing for the Future', breadcrumb: 'Investing for Future', difficulty: 'Advanced', duration: '20 min read', content: '<h2 class="text-xl font-bold mb-4">Long-Term Wealth: The Power of Investing</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">Saving is safe. Investing builds wealth. Over 20-30 years, KES 50,000 becomes millions through compound growth.</p><h3 class="text-lg font-bold mb-3">Investment Options</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Stocks (NSE):</strong> 10-20% annual returns</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Mutual Funds:</strong> 8-15% annually, professionally managed</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Real Estate:</strong> 8-12% through rental income</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Government Bonds:</strong> 8-10%, very safe</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span><strong>Business:</strong> 20%+ returns, requires active work</span></li></ul><h3 class="text-lg font-bold mb-3">Power of Compound Growth</h3><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6">Invest KES 10,000 once at age 25:</p><ul class="space-y-2 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span>At 8% annually: KES 684,848 by age 65</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span>At 12% annually: KES 2,686,634 by age 65</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">trending_up</span><span>At 15% annually: KES 8,100,727 by age 65</span></li></ul><h3 class="text-lg font-bold mb-3">Investment Timeline by Age</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Age 20-30:</strong> 80% stocks/growth (aggressive, time to recover)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Age 30-40:</strong> 70% stocks, 30% bonds (balanced)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Age 40-50:</strong> 60% stocks, 40% bonds (reduce risk)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">info</span><span><strong>Age 50-65:</strong> 40% stocks, 60% bonds (preserve capital)</span></li></ul><h3 class="text-lg font-bold mb-3">Getting Started</h3><ol class="space-y-3 mb-8 list-decimal list-inside"><li><span class="ml-2">Open brokerage account (Easy Equities, Genghis Capital)</span></li><li><span class="ml-2">Start with index funds or ETFs</span></li><li><span class="ml-2">Invest KES 500-1,000 monthly</span></li><li><span class="ml-2">Let compound growth work</span></li></ol><h3 class="text-lg font-bold mb-3">Mistakes to Avoid</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Trying to time the market</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Investing money needed in <3 years</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Putting all money in one stock</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Checking too frequently (emotional trading)</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-red-500 mt-0.5">warning</span><span>Panic selling during downturns</span></li></ul>', quiz: {question: 'When should you start investing?', options: ['After you have KES 1 million saved', 'As soon as possible (even with small amounts)', 'Only when you have KES 100,000'], correct: 1}},
+  {id: 'module-8', title: 'Financial Goals & Planning', breadcrumb: 'Financial Goals & Planning', difficulty: 'Intermediate', duration: '17 min read', content: '<h2 class="text-xl font-bold mb-4">SMART Financial Goals: Your Wealth Roadmap</h2><p class="text-[#374151] dark:text-[#cbd5e1] leading-relaxed mb-6"><strong>SMART</strong> = Specific, Measurable, Achievable, Relevant, Time-bound</p><h3 class="text-lg font-bold mb-3">Examples</h3><div class="bg-[#f8faf7] dark:bg-[#1a2e15] border-l-4 border-primary p-6 rounded-r-xl mb-8"><div class="space-y-4"><div><p class="text-sm text-[#6b8961] dark:text-[#9ca3af] mb-1"><strong>Weak Goal:</strong></p><p class="text-sm italic text-[#4b5563] dark:text-[#cbd5e1]">Save more money</p></div><div class="flex items-center gap-2 my-2"><span class="h-px flex-1 bg-primary/30"></span><span class="text-primary text-xs font-bold">vs</span><span class="h-px flex-1 bg-primary/30"></span></div><div><p class="text-sm text-primary mb-1"><strong>SMART Goal:</strong></p><p class="text-sm italic text-[#4b5563] dark:text-[#cbd5e1]">Save KES 100,000 by December 2024, setting aside KES 8,333/month</p></div></div></div><h3 class="text-lg font-bold mb-3">Financial Life Timeline</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">timeline</span><span><strong>Age 22-25:</strong> Emergency fund, pay student loans, start retirement savings</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">timeline</span><span><strong>Age 25-35:</strong> Buy property, invest in business, KES 500K-1M invested</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">timeline</span><span><strong>Age 35-50:</strong> Grow property portfolio, KES 5M-10M invested</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">timeline</span><span><strong>Age 50+:</strong> Live off investments and passive income</span></li></ul><h3 class="text-lg font-bold mb-3">How to Plan</h3><ol class="space-y-3 mb-8 list-decimal list-inside"><li><span class="ml-2">Write down dreams: home, car, business, travel, retirement, education</span></li><li><span class="ml-2">Make them SMART: add amounts and deadlines</span></li><li><span class="ml-2">Calculate monthly: KES 500,000 in 5 years = KES 8,333/month</span></li><li><span class="ml-2">Prioritize: rank by urgency</span></li><li><span class="ml-2">Track: monthly check-ins</span></li></ol><h3 class="text-lg font-bold mb-3">Goal Categories</h3><ul class="space-y-3 mb-8"><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Essential:</strong> Emergency fund, retirement savings</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Important:</strong> Home ownership, business investment</span></li><li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span><strong>Nice-to-have:</strong> Luxury items, cars, vacations</span></li></ul>', quiz: {question: 'What does the "S" in SMART goals stand for?', options: ['Savings', 'Specific', 'Simple'], correct: 1}}
+];
+
+
+let currentModuleIndex = 0;
+let moduleScores = {};
+
+async function loadProgress() {
+  const res = await fetch("/api/lesson-progress");
+  if (res.ok) {
+    const progress = await res.json();
+    if (Object.keys(progress).length > 0) {
+      moduleScores = {};
+      for (const [contentId, data] of Object.entries(progress)) {
+        moduleScores[contentId] = data.score;
+      }
+    } else {
+      console.warn("No progress returned from backend, keeping current moduleScores");
+    }
+  }
+}
+
+// UTILITY FUNCTIONS
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toastNotification');
+  const icon = document.getElementById('toastIcon');
+  const messageEl = document.getElementById('toastMessage');
+
+  messageEl.textContent = message;
+  toast.classList.remove('hidden');
+  
+  if (type === 'error') {
+    icon.textContent = 'error';
+    icon.classList.add('text-red-500');
+    icon.classList.remove('text-blue-500', 'text-green-500');
+  } else if (type === 'success') {
+    icon.textContent = 'check_circle';
+    icon.classList.add('text-green-500');
+    icon.classList.remove('text-red-500', 'text-blue-500');
+  } else {
+    icon.textContent = 'info';
+    icon.classList.add('text-blue-500');
+    icon.classList.remove('text-red-500', 'text-green-500');
+  }
+
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 3000);
+}
+
+// STREAK LOGIC
+const STREAK_KEY = 'learningStreak';
+const LAST_ACTIVITY_KEY = 'lastActivityTime';
+const HOURS_24 = 24 * 60 * 60 * 1000;
+const HOURS_25 = 25 * 60 * 60 * 1000;
+
+function updateStreakDisplay() {
+  const now = Date.now();
+  const lastActivity = parseInt(localStorage.getItem(LAST_ACTIVITY_KEY)) || 0;
+  let streak = parseInt(localStorage.getItem(STREAK_KEY)) || 0;
+
+  if (lastActivity && now - lastActivity > HOURS_25) {
+    streak = 1;
+  } else if (!lastActivity || now - lastActivity > HOURS_24) {
+    streak = Math.max(1, streak);
+  }
+
+  document.getElementById('streakDisplay').textContent = streak + ' Day' + (streak !== 1 ? 's' : '');
+}
+async function loadProgress() {
+  try {
+    const res = await fetch("/api/lesson-progress");
+    if (!res.ok) {
+      console.error("Failed to load progress:", res.status);
+      moduleScores = {};
+      return;
+    }
+    const progress = await res.json();
+    moduleScores = progress || {};
+  } catch (err) {
+    console.error("Error loading progress:", err);
+    moduleScores = {};
+  }
+}
+async function saveProgress(moduleId, score) {
+  await fetch("/api/lesson-progress", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({moduleId, score})
+  });
+}
+
+function recordLearningActivity() {
+  const now = Date.now();
+  const lastActivity = parseInt(localStorage.getItem(LAST_ACTIVITY_KEY)) || 0;
+  let streak = parseInt(localStorage.getItem(STREAK_KEY)) || 0;
+
+  if (!lastActivity) {
+    streak = 1;
+  } else if (now - lastActivity > HOURS_25) {
+    streak = 1;
+  } else if (now - lastActivity > HOURS_24) {
+    streak++;
+  }
+
+  localStorage.setItem(STREAK_KEY, streak);
+  localStorage.setItem(LAST_ACTIVITY_KEY, now);
+  updateStreakDisplay();
+}
+
+// MODULE NAVIGATION
+function loadModule(index) {
+  currentModuleIndex = index;
+  const module = modules[index];
+
+  document.querySelector('.breadcrumb-module').textContent = module.breadcrumb;
+  document.querySelector('.module-title').textContent = module.title;
+  document.querySelector('.module-difficulty').textContent = module.difficulty;
+  document.querySelector('.module-duration').textContent = module.duration;
+
+  document.querySelector('.lesson-content article').innerHTML = module.content;
+
+  const quizContainer = document.getElementById('quizContainer');
+  quizContainer.innerHTML = `
+    <div class="h-px bg-[#e2e8e0] dark:border-[#2d3a28] mb-12"></div>
+    <section class="mb-12">
+      <h2 class="text-xl font-bold mb-8 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">quiz</span>
+        Knowledge Check
+      </h2>
+      <div class="bg-[#f1f4f0] dark:bg-[#24361f] p-6 rounded-xl">
+        <p class="font-medium mb-4">${module.quiz.question}</p>
+        <div class="grid gap-3" id="quizOptions"></div>
+      </div>
+    </section>
+  `;
+
+  const optionsContainer = document.getElementById('quizOptions');
+  module.quiz.options.forEach((option, idx) => {
+    const label = document.createElement('label');
+    label.className = 'flex items-center gap-3 p-3 bg-white dark:bg-[#1a2e15] border border-[#e2e8e0] dark:border-[#2d3a28] rounded-lg cursor-pointer hover:border-primary transition-colors';
+    label.innerHTML = `<input class="text-primary" type="radio" name="quiz" value="${idx}"/><span class="text-sm">${option}</span>`;
+    optionsContainer.appendChild(label);
+  });
+
+  updateSidebar();
+  const score = moduleScores[module.id] || 0;
+  updateScoreCard(score);
+
+  document.getElementById('nextModuleBtn').disabled = true;
+  document.getElementById('nextModuleBtn').classList.add('opacity-50', 'cursor-not-allowed');
+  document.getElementById('prevModuleBtn').disabled = currentModuleIndex === 0;
+
+  document.querySelector('.flex-1.overflow-y-auto').scrollTop = 0;
+}
+
+function updateSidebar() {
+  document.querySelectorAll('.sidebar-module').forEach((item, idx) => {
+    if (idx === currentModuleIndex) {
+      item.classList.add('bg-primary/10', 'text-primary');
+      item.classList.remove('text-[#6b8961]', 'hover:bg-[#f1f4f0]', 'dark:hover:bg-[#24361f]');
+    } else {
+      item.classList.remove('bg-primary/10', 'text-primary');
+      item.classList.add('text-[#6b8961]', 'hover:bg-[#f1f4f0]', 'dark:hover:bg-[#24361f]');
+    }
+  });
+
+  const completedCount = Object.values(moduleScores).filter(v => v === 100).length;
+  const progressPercent = (completedCount / modules.length) * 100;
+  document.querySelector('.progress-bar-fill').style.width = progressPercent + '%';
+  document.querySelector('.progress-text').textContent = completedCount + ' of ' + modules.length + ' Modules Completed';
+}
+
+function updateScoreCard(percentage) {
+  document.getElementById('scorePercentage').textContent = percentage + '%';
+  
+  let summaryText;
+  if (percentage === 0) {
+    summaryText = 'Start the quiz to earn points!';
+  } else if (percentage === 100) {
+    summaryText = 'Perfect score! Module mastered!';
+  } else {
+    summaryText = 'Great progress! Keep learning!';
+  }
+  document.getElementById('scoreSummary').textContent = summaryText;
+
+  const circle = document.getElementById('progressCircle');
+  if (circle && circle.r && circle.r.baseVal) {
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (percentage / 100) * circumference;
+    circle.style.strokeDasharray = circumference;
+    circle.style.strokeDashoffset = offset;
+  }
+}
+
+// EVENT LISTENERS
+document.getElementById('submitAnswerBtn').addEventListener('click', () => {
+  const selected = document.querySelector('input[name="quiz"]:checked');
+  if (!selected) {
+    showToast('Please select an answer first.', 'info');
+    return;
+  }
+
+  const selectedIndex = parseInt(selected.value);
+  const module = modules[currentModuleIndex];
+
+  if (selectedIndex === module.quiz.correct) {
+    moduleScores[module.id] = 100;
+    saveProgress(module.id, 100);
+    
+    updateScoreCard(100);
+    recordLearningActivity();
+    showToast('Correct! Great job!', 'success');
+
+    document.getElementById('nextModuleBtn').disabled = false;
+    document.getElementById('nextModuleBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+    updateSidebar();
+  } else {
+    showToast('Not quite right. Try again or move to the next module!', 'error');
+  }
+});
+
+document.getElementById('nextModuleBtn').addEventListener('click', () => {
+  if (currentModuleIndex < modules.length - 1) {
+    loadModule(currentModuleIndex + 1);
+  } else {
+    showToast('You\'ve completed all modules! Great learning journey!', 'success');
+  }
+});
+
+document.getElementById('prevModuleBtn').addEventListener('click', () => {
+  if (currentModuleIndex > 0) {
+    loadModule(currentModuleIndex - 1);
+  }
+});
+
+// INITIALIZE
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', async() => {
+    await loadProgress();
+    updateStreakDisplay();
+    loadModule(0);
+  });
+} else {
+  (async () => {
+    await loadProgress();
+    updateStreakDisplay();
+    loadModule(0);
+  })();
+}
+
+</script>
+</body>
+</html>

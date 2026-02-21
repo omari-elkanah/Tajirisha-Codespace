@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tajirisha - Savings Goal Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#46ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#142210",
+                        "earthy-muted": "#6b8961",
+                        "earthy-dark": "#131811",
+                        "earthy-border": "#dee6db"
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "sans": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .pattern-bg {
+            background-image: radial-gradient(#46ec13 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.05;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-earthy-dark dark:text-white min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-earthy-border dark:border-white/10 px-6 lg:px-40 py-3">
+<div class="max-w-[1200px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Tajirisha</h1>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+  <!-- Savings (active) -->
+  <a href="{{ url_for('savings') }}"
+     class="text-sm font-medium text-primary underline underline-offset-8">
+    Savings
+  </a>
+
+  <!-- Budget -->
+  <a href="{{ url_for('budget') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Budget
+  </a>
+
+  <!-- Lessons -->
+  <a href="{{ url_for('lessons') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Lessons
+  </a>
+
+  <!-- Community -->
+  <a href="{{ url_for('community') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Community
+  </a>
+
+  <!-- Simulation -->
+  <a href="{{ url_for('simulation') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Simulation
+  </a>
+
+  <!-- Settings -->
+  <a href="{{ url_for('settings') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Settings
+  </a>
+
+  <!-- Dashboard -->
+  <a href="{{ url_for('dashboard') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Dashboard
+  </a>
+
+  <div class="flex justify-center">
+  <a href="{{ url_for('logout') }}"
+     class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors">
+     Logout
+  </a>
+</div>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-lg bg-earthy-border/30 dark:bg-white/5 hover:bg-earthy-border/50 transition-colors">
+<span class="material-symbols-outlined text-lg">notifications</span>
+</button>
+<div class="size-10 rounded-full border-2 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile picture of a smiling young student" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXdbHAXwWSJSKdMDVdlITnIj1kWZcsVLSCk9bVyGIU3VqrT8IkVTjkAgRjBilmi7IMOUQ1f6Nh4SE6-DEgbY-2O2aFeKF5FTFhcAThVKWPkkZtclYjtOFLJqnyXS-DUhPGsdXUkHKrxlp5bR6hdglfHHbzvr-IAfbNyrphlwv6GwdCMJrs2vvhJkMY4oeUDfS6eqsGCAxI3pe73nVn1d4Sddv4IJOYwsNis47Imz5OUvUqz5NYbnepAqgx9Ln9QZ08AwGujoslf7TS"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+
+<main class="flex-1 max-w-[1200px] mx-auto w-full px-6 lg:px-40 py-10 relative">
+  <div class="absolute inset-0 pattern-bg pointer-events-none"></div>
+
+  <!-- Two-column grid with heading + form on left, savings on right -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+    
+    <!-- LEFT COLUMN: Page Heading + Create New Goal Form -->
+    <div class="space-y-8">
+      <!-- Page Heading -->
+      <div>
+        <h2 class="text-4xl font-black tracking-tight mb-2">Savings Goal Planner</h2>
+        <p class="text-earthy-muted dark:text-gray-400">Create new goals and track your progress.</p>
+      </div>
+    
+      <!-- Create New Goal Form -->
+      <form method="POST" action="{{ url_for('savings') }}" class="space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-6">
+          <!-- Target Amount -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-earthy-dark dark:text-white">Target Amount (KSh)</label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-earthy-muted font-bold">KSh</span>
+              <input name="target_amount" type="number"
+                     class="w-full pl-14 pr-4 h-14 rounded-lg border border-earthy-border dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                     placeholder="50,000" />
+            </div>
+          </div>
+
+          <!-- Goal Category -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-earthy-dark dark:text-white">Name of the Goal</label>
+            <div class="relative">
+              <input name="goal_category" type="text"
+                     class="w-full px-4 h-14 rounded-lg border border-earthy-border dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                     placeholder="e.g., Laptop" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Deadline -->
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-bold text-earthy-dark dark:text-white">Target Deadline</label>
+          <input name="deadline" type="date"
+                 class="w-full h-14 rounded-lg border border-earthy-border dark:border-white/10 bg-white dark:bg-white/5 px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="flex items-center justify-end gap-4 border-t border-earthy-border dark:border-white/10 pt-8">
+        <button type="reset"
+                class="px-6 py-3 text-sm font-bold text-earthy-muted hover:text-earthy-dark dark:hover:text-white transition-colors">
+          Cancel
+        </button>
+        <button type="submit"
+                class="bg-primary hover:bg-primary/90 text-earthy-dark font-black px-10 py-3 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+          Save Goal
+          <span class="material-symbols-outlined">check_circle</span>
+        </button>
+      </div>
+    </form>
+    </div>
+
+    <!-- RIGHT COLUMN: Savings + Existing Goals + Summary -->
+    <div class="space-y-6">
+      <!-- Portfolio Balance -->
+      <div class="bg-white dark:bg-white/5 rounded-xl border border-earthy-border dark:border-white/10 p-6 shadow-sm">
+        <h4 class="text-sm font-bold uppercase tracking-wider text-earthy-muted mb-4">Your Savings</h4>
+        <p class="text-lg font-bold mb-6">You have KSh {{ portfolio_balance }} saved so far</p>
+        
+        <!-- Update Savings Form -->
+        <form method="POST" action="{{ url_for('savings') }}" class="space-y-4">
+          <input type="hidden" name="action" value="update_balance"/>
+          <div class="flex flex-col gap-3">
+            <label class="text-sm font-bold text-earthy-dark dark:text-white">Update Your Savings</label>
+            <div class="flex gap-2">
+              <div class="relative flex-1">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-earthy-muted font-bold">KSh</span>
+                <input name="new_balance" type="number" step="0.1"
+                       class="w-full pl-14 pr-4 h-12 rounded-lg border border-earthy-border dark:border-white/10 bg-white dark:bg-white/5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                       placeholder="New amount" />
+              </div>
+              <button type="submit"
+                      class="bg-primary hover:bg-primary/90 text-earthy-dark font-bold px-6 h-12 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined">edit</span>
+                Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Existing Goals -->
+      <h3 class="text-xl font-bold mb-4">Your Existing Goals</h3>
+      <div class="max-h-96 overflow-y-auto space-y-6 pr-2">
+        {% if goals %}
+          {% for goal in goals %}
+            <form method="POST" action="{{ url_for('savings') }}">
+              <input type="hidden" name="goal_id" value="{{ goal.goal_id }}"/>
+              <input type="hidden" name="action" value="delete"/>
+              <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-6 shadow-lg flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="text-lg font-bold mb-2">{{ goal.category }}</h4>
+                  <p class="text-sm text-earthy-muted mb-2">
+                    Target: KSh {{ goal.target_amount }} | Deadline: {{ goal.deadline }}
+                  </p>
+                  <div class="w-full h-3 bg-yellow-200 rounded-full overflow-hidden mb-2">
+                    <div class="h-full bg-primary" style="width: {{ goal.progress }}%;"></div>
+                  </div>
+                  <p class="text-xs text-earthy-muted">Progress: {{ goal.progress }}%</p>
+                </div>
+                <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 ml-4">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </div>
+            </form>
+          {% endfor %}
+        {% else %}
+          <p class="text-sm text-earthy-muted">No goals yet. Start by creating one on the left!</p>
+        {% endif %}
+      </div>
+
+      <!-- Goal Summary Card -->
+      <div class="bg-white dark:bg-white/5 rounded-xl border border-earthy-border dark:border-white/10 p-6 shadow-sm">
+        <h4 class="text-sm font-bold uppercase tracking-wider text-earthy-muted mb-4">Goal Summary</h4>
+
+        <ul class="space-y-3 text-sm">
+          {% for goal in goals %}
+            <li class="flex justify-between">
+              <span class="text-earthy-muted">{{ goal.category }}:</span>
+              <span class="font-bold">KSh {{ portfolio_balance }} / {{ goal.target_amount }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="border-t border-earthy-border dark:border-white/10 my-4"></div>
+
+        <div class="flex justify-between text-sm font-bold">
+          <span>Total Saved:</span>
+          <span>KSh {{ portfolio_balance }}</span>
+        </div>
+        <div class="flex justify-between text-sm font-bold">
+          <span>Total Target:</span>
+          <span>KSh {{ total_target }}</span>
+        </div>
+
+        <div class="w-full h-4 bg-earthy-border dark:bg-white/10 rounded-full overflow-hidden mt-3">
+          <div class="h-full bg-primary" style="width: {{ overall_progress }}%;"></div>
+        </div>
+        <p class="text-xs text-earthy-muted mt-2">Overall Progress: {{ overall_progress|round(1) }}%</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body></html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Tajirisha - Onboarding</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#46ec13",
+            "accent-gold": "#D4AF37",
+            "accent-red": "#8B0000",
+            "background-light": "#f6f8f6",
+            "background-dark": "#142210",
+          },
+          fontFamily: {
+            display: ["Lexend", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: "Lexend", sans-serif;
+    }
+    .form-input:focus {
+      border-color: #46ec13 !important;
+      box-shadow: 0 0 0 1px #46ec13 !important;
+    }
+  </style>
+</head>
+<body class="bg-background-light min-h-screen flex items-center justify-center">
+
+  <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8">
+    <!-- Progress Indicator -->
+    <div class="flex items-center justify-between mb-8">
+      <span class="text-sm font-semibold text-gray-600">Step 1 of 3</span>
+      <div class="w-2/3 h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-primary rounded-full" style="width: 33%;"></div>
+      </div>
+    </div>
+
+    <h2 class="text-3xl font-bold text-primary-dark mb-6">Let's get to know you better</h2>
+
+    <form method="POST" action="{{ url_for('onboarding_step1') }}" class="space-y-6">
+      <!-- Full Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <input type="text" name="name" required
+               class="form-input w-full rounded-lg border-gray-300 shadow-sm px-4 h-12">
+      </div>
+
+      <!-- Starting Balance -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">How much do you have saved so far?(KSh)</label>
+        <input type="number" step="1" name="balance" required
+               class="form-input w-full rounded-lg border-gray-300 shadow-sm px-4 h-12">
+      </div>
+
+      <!-- Savings Goal -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">What goal is achieved through savings?</label>
+        <input type="text" name="goal_category" placeholder="e.g., New Laptop" required
+               class="form-input w-full rounded-lg border-gray-300 shadow-sm px-4 h-12">
+
+        <label class="block text-sm font-medium text-gray-700 mt-3 mb-1">What amount do you want to target as savings? (KSh)</label>
+        <input type="number" step="1" name="goal_target" required
+               class="form-input w-full rounded-lg border-gray-300 shadow-sm px-4 h-12">
+
+        <label class="block text-sm font-medium text-gray-700 mt-3 mb-1">What date do you want the Goal Deadline to be?</label>
+        <input type="date" name="goal_deadline" required
+               class="form-input w-full rounded-lg border-gray-300 shadow-sm px-4 h-12">
+      </div>
+
+      <!-- Risk Appetite -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">How risky are you in Investments? ( Low (1) --- (5) Moderate --- (10) Very High )</label>
+        <input type="number" min="1" max="10" name="risk_level" required
+               class="form-input w-full rounded-lg border-gray-300 shadow-sm px-4 h-12">
+      </div>
+
+      <!-- Submit -->
+      <button type="submit"
+              class="w-full bg-primary text-slate-900 font-bold py-3 px-6 rounded-lg text-sm hover:bg-primary-dark transition-colors">
+        Save & Continue
+      </button>
+    </form>
+  </div>
+
+  <footer class="py-6 text-center text-zinc-500 dark:text-zinc-600 text-xs">
+    <p>© 2026 Tajirisha Kenya. Empowering your financial future.</p>
+    <div class="mt-2 flex justify-center gap-4 font-medium">
+      <!--a class="hover:text-primary" href="#">Privacy Policy</a-->
+      <a class="hover:text-primary" 
+        href="Proposal_Software _Contract.docx">By continuing, you hereby agree to our Terms of Service</a>
+    </div>
+  </footer>
+</body>
+</html>

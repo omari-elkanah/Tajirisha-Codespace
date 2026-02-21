@@ -1,0 +1,117 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tajirisha - Logs</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#46ec13",
+              "accent-gold": "#D4AF37",
+              "accent-red": "#8B0000",
+              "background-light": "#f6f8f6",
+              "background-dark": "#142210",
+            },
+            fontFamily: {
+              display: ["Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .form-input:focus {
+        border-color: #46ec13 !important;
+        box-shadow: 0 0 0 1px #46ec13 !important;
+      }
+    </style>
+  </head>
+
+  <!-- Page Container -->
+  <div class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-2xl font-bold text-primary">Event Logs</h1>
+      <a href="{{ url_for('download_logs') }}"
+         class="bg-primary text-white px-5 py-2 rounded-lg hover:bg-green-600 transition">
+        Download CSV
+      </a>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get" action="{{ url_for('logs') }}" class="flex flex-col md:flex-row gap-4 mb-6">
+      <select name="event_type"
+              class="form-select flex-1 rounded-lg border border-neutral-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 h-12 px-4">
+        <option value="">All Event Types</option>
+        <option value="Login" {% if event_type_filter == "Login" %}selected{% endif %}>Login</option>
+        <option value="TransactionEntry" {% if event_type_filter == "TransactionEntry" %}selected{% endif %}>Transaction Entry</option>
+        <option value="SimulationRun" {% if event_type_filter == "SimulationRun" %}selected{% endif %}>Simulation Run</option>
+      </select>
+
+      <input type="date" name="date"
+             value="{{ date_filter }}"
+             class="form-input flex-1 rounded-lg border border-neutral-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 h-12 px-4"/>
+
+      <button type="submit"
+              class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+        Filter
+      </button>
+    </form>
+
+    <!-- Logs Table -->
+    <div class="overflow-x-auto rounded-lg shadow">
+      <table class="table-auto w-full border-collapse">
+        <thead class="bg-neutral-100 dark:bg-zinc-800">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold">Event Type</th>
+            <th class="px-4 py-3 text-left font-semibold">Description</th>
+            <th class="px-4 py-3 text-left font-semibold">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-neutral-200 dark:divide-zinc-700">
+          {% for log in logs %}
+          <tr class="hover:bg-neutral-50 dark:hover:bg-zinc-700 transition">
+            <td class="px-4 py-2">{{ log.event_type }}</td>
+            <td class="px-4 py-2">{{ log.description }}</td>
+            <td class="px-4 py-2">{{ log.created_at }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3" class="text-center py-6 text-gray-500">No logs found</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</body>
+</html>

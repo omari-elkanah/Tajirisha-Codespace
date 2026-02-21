@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tajirisha | Investment Simulation Tool</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#46ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#142210",
+                        "kenya-red": "#BB0000",
+                        "kenya-gold": "#FFD700",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .kenyan-pattern {
+            background-color: #142210;
+            background-image: radial-gradient(#46ec13 0.5px, transparent 0.5px);
+            background-size: 10px 10px;
+        }
+        .chart-gradient {
+            background: linear-gradient(180deg, rgba(70, 236, 19, 0.2) 0%, rgba(70, 236, 19, 0) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#131811] dark:text-white antialiased">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-4 text-[#131811] dark:text-primary">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-black">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<h2 class="text-[#131811] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Tajirisha</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="flex items-center gap-9">
+  <!-- Simulations (active) -->
+  <a href="{{ url_for('simulation') }}"
+     class="text-primary text-sm font-bold leading-normal">
+    Simulations
+  </a>
+
+  <!-- Budget -->
+  <a href="{{ url_for('budget') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Budget
+  </a>
+
+  <!-- Community -->
+  <a href="{{ url_for('community') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Community
+  </a>
+
+  <!-- Learning Hub -->
+  <a href="{{ url_for('lessons') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Learning Hub
+  </a>
+
+  <!-- Savings -->
+  <a href="{{ url_for('savings') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Savings
+  </a>
+
+  <!-- Settings -->
+  <a href="{{ url_for('settings') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Settings
+  </a>
+
+  <!-- Dashboard -->
+  <a href="{{ url_for('dashboard') }}"
+     class="text-sm font-medium hover:text-primary transition-colors">
+    Dashboard
+  </a>
+  <div class="flex justify-center">
+  <a href="{{ url_for('logout') }}"
+     class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors">
+     Logout
+  </a>
+</div>
+</nav>
+<div class="flex items-center gap-4">
+<a href="{{ url_for('settings') }}"
+   class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-black text-sm font-bold leading-normal tracking-[0.015em] hover:brightness-110 transition-all">
+  <span>Profile</span>
+</a>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary" data-alt="User profile avatar illustration" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAANOM8Z842R45RoDsXIPJePAtfhJpTKEd3izcrw02fHLpMAPj97NtewVFaLq9XXbTdeSWWj7KxxgXQWRiC2TmSPwFb9-iu3bg0p3knQJKiBHnMTb0VF6XvXdFU_n8WBpXf-AzadHI5h7ZnlmaRX0_p-VSXE5-lHUROZYjveZdD08UJs0HcfXkDiIUWEiFXxAk93IMWftmrXPPrDcg6LATUQ_0YeD17k95Q6hLANILVHCMBeAfAOZRH_BrAac2PnH2L6zOdJralhU5L");'></div>
+</div>
+</div>
+</header>
+
+<main class="max-w-[1280px] mx-auto px-6 py-8">
+  <!-- Page Heading -->
+  <div class="flex flex-wrap justify-between items-end gap-3 mb-8">
+    <div class="flex flex-col gap-2">
+      <p class="text-[#131811] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+        Investment Simulation Tool
+      </p>
+      <p class="text-[#6b8961] dark:text-gray-400 text-base font-normal leading-normal">
+        Simulate Your Future: Explore how different Kenyan assets grow over time.
+      </p>
+    </div>
+  </div>
+
+  <!-- Main Split Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Left Panel: Inputs -->
+    <div class="lg:col-span-4 flex flex-col gap-6">
+      <form method="POST" action="{{ url_for('simulation') }}" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm flex flex-col gap-6">
+        <h3 class="text-xl font-bold mb-2 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">tune</span>
+          Investment Parameters
+        </h3>
+
+        <!-- Scenario Type Dropdown -->
+        <div>
+          <label class="flex flex-col gap-2">
+            <span class="text-[#131811] dark:text-white text-sm font-semibold uppercase tracking-wider">Scenario Type</span>
+            <select id="scenarioSelect" name="scenario_type" class="form-input w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#131811] dark:text-white h-12 px-4 focus:ring-primary focus:border-primary transition-all">
+              <option value="nse">NSE Stocks</option>
+              <option value="sp500">S&P 500</option>
+              <option value="treasury">Government Treasury Bonds</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Risk Strength Bar -->
+        <div>
+          <label class="flex flex-col gap-2">
+            <span class="text-[#131811] dark:text-white text-sm font-semibold uppercase tracking-wider">Risk Strength</span>
+            <div class="w-full bg-gray-200 rounded-lg h-3 relative">
+              <div id="riskStrengthBar" class="h-3 rounded-lg transition-all"></div>
+            </div>
+            <span id="riskStrengthLabel" class="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">
+              {{ risk_profile or "Moderate" }}
+            </span>
+          </label>
+          <input type="hidden" name="risk_level" id="riskLevelInput" value="{{ risk_level or 5 }}">
+        </div>
+
+        <!-- Investment Duration -->
+        <div>
+          <label class="flex flex-col gap-2">
+            <span class="text-[#131811] dark:text-white text-sm font-semibold uppercase tracking-wider">Investment Duration (Months)</span>
+            <input name="duration" type="number" min="1" max="60" value="{{ duration or 2 }}"
+                   class="form-input w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#131811] dark:text-white h-12 px-4 focus:ring-primary focus:border-primary font-bold"/>
+          </label>
+        </div>
+
+        <!-- Amount Field -->
+        <div>
+          <label class="flex flex-col gap-2">
+            <span class="text-[#131811] dark:text-white text-sm font-semibold uppercase tracking-wider">Initial Investment (KES)</span>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">KSh</span>
+              <input name="amount" type="number" value="{{ amount or 100 }}"
+                     class="form-input w-full pl-14 pr-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#131811] dark:text-white h-12 focus:ring-primary focus:border-primary font-bold"/>
+            </div>
+          </label>
+        </div>
+
+        <!-- Run Simulation Button -->
+        <button type="submit" class="w-full bg-primary hover:bg-opacity-90 text-black font-extrabold text-lg py-4 rounded-xl flex items-center justify-center gap-3 shadow-[0_4px_0_0_#2d9c0b] active:shadow-none active:translate-y-1 transition-all">
+          <span class="material-symbols-outlined">analytics</span>
+          Run Simulation
+        </button>
+      </form>
+    </div>
+
+    <!-- Right Panel: Results -->
+    <div class="lg:col-span-8 flex flex-col gap-6">
+
+      <!-- KPI Cards Row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <!-- Scenario Type -->
+        <div class="bg-white dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Scenario Type</p>
+          <p class="text-lg font-black text-[#131811] dark:text-white leading-none capitalize">
+            {{ scenario_type or "N/A" }}
+          </p>
+        </div>
+        <!-- Initial Investment -->
+        <div class="bg-white dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Initial Investment</p>
+          <p class="text-lg font-black text-[#131811] dark:text-white leading-none">
+            KSh {{ amount|comma if amount else "0" }}
+          </p>
+        </div>
+        <!-- Expected Return -->
+        <div class="bg-white dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Expected Return</p>
+          <p class="text-lg font-black text-primary leading-none">
+            {{ expected_return or 0 }}% <span class="text-sm font-normal text-gray-400">/yr</span>
+          </p>
+        </div>
+        <!-- Risk Profile -->
+        <div class="bg-white dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Risk Profile</p>
+          <p class="text-3lg font-black text-[#131811] dark:text-white leading-none">
+            {{ risk_profile or "Risk Level" }}
+          </p>
+        </div>
+        <!-- Estimated Value -->
+        <div class="bg-white dark:bg-gray-900 p-3 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Estimated Value ({{ duration or 12 }}mo)</p>
+          <p class="text-lg font-black text-[#131811] dark:text-white leading-none">
+            KSh {{ estimated_value|comma if estimated_value else "0" }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Projection Section -->
+      {% if projection_table %}
+      <div class="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-6">
+        <h3 id="projectionHeading" class="text-lg font-bold">Projection</h3>
+        <!-- Graph -->
+        {% if projection_img %}
+        <div class="mb-4">
+          <img src="{{ projection_img }}" alt="Projection Graph" class="rounded-lg shadow-md w-full"/>
+        </div>
+        {% endif %}
+        <!-- Table -->
+        {{ projection_table|safe }}
+      </div>
+      {% endif %}
+
+      <!-- Historical Section -->
+      {% if history_table %}
+      <div class="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-6">
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-bold">Historical Performance</h3>
+          <!-- Year Selector -->
+          <label class="flex items-center gap-3">
+            <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Select Year:</span>
+            <select id="historyYearSelect" class="form-input rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#131811] dark:text-white h-10 px-8 focus:ring-primary focus:border-primary transition-all">
+              {% for yr in history_years %}
+                <option value="{{ yr }}">{{ yr }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+        <!-- Graph -->
+        {% if history_img %}
+        <div class="mb-4">
+          <img src="{{ history_img }}" alt="Historical Graph" class="rounded-lg shadow-md w-full"/>
+        </div>
+        {% endif %}
+        <!-- Table -->
+        <div id="historyTableContainer">
+          {{ history_table|safe }}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+    </div>
+  </div>
+</main>
+<script>
+  const riskLevelInput = document.getElementById("riskLevelInput");
+  const riskStrengthBar = document.getElementById("riskStrengthBar");
+  const riskStrengthLabel = document.getElementById("riskStrengthLabel");
+  const scenarioSelect = document.querySelector("select[name='scenario_type']");
+
+  function updateRiskStrength(level) {
+    let label = "Moderate Risk";
+    let color = "bg-yellow-400";
+    if (level <= 3) {
+      label = "Low Risk";
+      color = "bg-green-500";
+    } else if (level <= 7) {
+      label = "Moderate Risk";
+      color = "bg-yellow-400";
+    } else {
+      label = "High Risk";
+      color = "bg-red-500";
+    }
+    riskStrengthBar.className = `h-3 rounded-lg transition-all ${color}`;
+    riskStrengthBar.style.width = (level * 10) + "%";
+    riskStrengthLabel.textContent = label;
+    riskLevelInput.value = level;
+  }
+
+  // Initialize with default
+  updateRiskStrength(parseInt(riskLevelInput.value));
+
+  // Allow clicking to adjust risk
+  riskStrengthBar.parentElement.addEventListener("click", function(e) {
+    const rect = this.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const level = Math.min(10, Math.max(1, Math.round((clickX / rect.width) * 10)));
+    updateRiskStrength(level);
+  });
+
+  // Update risk defaults when scenario changes
+  scenarioSelect.addEventListener("change", function() {
+    if (this.value === "treasury") {
+      updateRiskStrength(2); // safer asset → low risk
+    } else if (this.value === "nse") {
+      updateRiskStrength(5); // moderate risk
+    } else if (this.value === "sp500") {
+      updateRiskStrength(8); // higher volatility → high risk
+    }
+  });
+
+  // Update projection heading with dynamic date range
+  function updateProjectionHeading() {
+    const durationInput = document.querySelector("input[name='duration']");
+    const projectionHeading = document.getElementById("projectionHeading");
+    
+    if (durationInput && projectionHeading) {
+      const duration = parseInt(durationInput.value) || 12;
+      const today = new Date();
+      const endDate = new Date(today);
+      endDate.setMonth(endDate.getMonth() + duration);
+      
+      const formatDate = (date) => date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      projectionHeading.textContent = `Projection: ${formatDate(today)} to ${formatDate(endDate)}`;
+    }
+  }
+  
+  updateProjectionHeading();
+  document.querySelector("input[name='duration']").addEventListener("change", updateProjectionHeading);
+
+  // --- Historical Year Dropdown Logic ---
+  const historyTables = {{ history_tables|tojson|safe }};
+  const historyTableContainer = document.getElementById("historyTableContainer");
+  const historyYearSelect = document.getElementById("historyYearSelect");
+  const historyImgElement = document.querySelector("img[alt='Historical Graph']");
+  const historyGraphs = {{ history_graphs|tojson|safe }}; // pass dict of year→graph from Flask
+
+  if (historyYearSelect && historyTableContainer && historyTables) {
+    historyYearSelect.addEventListener("change", function() {
+      const selectedYear = this.value;
+      if (historyTables[selectedYear]) {
+        historyTableContainer.innerHTML = historyTables[selectedYear];
+      }
+      if (historyGraphs && historyGraphs[selectedYear] && historyImgElement) {
+        historyImgElement.src = historyGraphs[selectedYear];
+      }
+    });
+  }
+</script>
+</body></html>

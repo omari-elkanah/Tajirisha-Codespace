@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-2xl mx-auto bg-white dark:bg-zinc-800 p-6 rounded-lg shadow space-y-8">
+
+  <!-- Greeting -->
+  <div>
+    <h2 class="text-[#1a2e21] dark:text-white text-4xl font-black tracking-tight">
+      Habari, {{ user.name }}!
+    </h2>
+    <p class="text-[#4b6b58] text-base">
+      Track your Big Wins and financial growth today.
+    </p>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      {{ user.university }} • Year {{ user.year_of_study }}
+    </p>
+  </div>
+
+  <!-- Nudges Section -->
+  <section class="space-y-4">
+    <h2 class="text-xl font-bold text-primary">Your Nudges</h2>
+
+    {% if nudges %}
+      {% for nudge in nudges %}
+        <div class="bg-white dark:bg-[#1a2e15] rounded-lg shadow p-4 flex justify-between items-start">
+          <div>
+            <p class="text-sm text-[#131811] dark:text-[#f1f4f0] leading-relaxed">
+              {{ nudge.message }}
+            </p>
+            <span class="text-xs text-gray-500 dark:text-gray-400">
+              Trigger: {{ nudge.trigger_condition }} • {{ nudge.delivered_at.strftime("%b %d, %Y %H:%M") }}
+            </span>
+            <p class="text-xs mt-1 
+                      {% if nudge.response_status == 'active' %}text-primary font-semibold{% endif %}
+                      {% if nudge.response_status == 'acknowledged' %}text-blue-600 dark:text-blue-400{% endif %}
+                      {% if nudge.response_status == 'dismissed' %}text-red-600 dark:text-red-400{% endif %}">
+              Status: {{ nudge.response_status|capitalize }}
+            </p>
+          </div>
+
+          {% if nudge.response_status == 'active' %}
+            <div class="flex gap-2">
+              <!-- Mark as Read -->
+              <form method="POST" action="{{ url_for('acknowledge_nudge', nudge_id=nudge.nudge_id) }}">
+                <button type="submit"
+                        class="text-xs px-3 py-1 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 transition">
+                  Mark as Read
+                </button>
+              </form>
+
+              <!-- Dismiss -->
+              <form method="POST" action="{{ url_for('dismiss_nudge', nudge_id=nudge.nudge_id) }}">
+                <button type="submit"
+                        class="text-xs px-3 py-1 rounded bg-gray-200 dark:bg-zinc-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-zinc-600 transition">
+                  Dismiss
+                </button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-sm text-gray-500 dark:text-gray-400">No nudges available at the moment.</p>
+    {% endif %}
+  </section>
+
+</div>
+
+{% endblock %}

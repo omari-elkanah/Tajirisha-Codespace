@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Tajirisha - Community Forum</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#46ec13",
+            "background-light": "#f6f8f6",
+            "background-dark": "#142210",
+          },
+          fontFamily: {
+            "display": ["Lexend", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { font-family: 'Lexend', sans-serif; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#131811] dark:text-[#f1f4f0] transition-colors duration-200">
+<div class="layout-container flex h-full grow flex-col">
+
+  <!-- Top Navigation -->
+  <header class="flex items-center justify-between border-b border-[#dee6db] dark:border-[#2d3a28] bg-white dark:bg-[#1a2e15] px-6 lg:px-40 py-3 sticky top-0 z-50">
+    <div class="flex items-center gap-7">
+      <h2 class="text-[#131811] dark:text-white text-lg font-bold">Tajirisha</h2>
+      <div class="hidden md:flex items-center gap-9">
+        <a href="{{ url_for('community') }}" class="text-primary text-sm font-bold border-b-2 border-primary">Community</a>
+        <a href="{{ url_for('savings') }}" class="text-sm font-medium hover:text-primary">Savings</a>
+        <a href="{{ url_for('budget') }}" class="text-sm font-medium hover:text-primary">Budget</a>
+        <a href="{{ url_for('lessons') }}" class="text-sm font-medium hover:text-primary">Learning Hub</a>
+        <a href="{{ url_for('simulation') }}" class="text-sm font-medium hover:text-primary">Simulations</a>
+        <a href="{{ url_for('settings') }}" class="text-sm font-medium hover:text-primary">Settings</a>
+        <a href="{{ url_for('dashboard') }}" class="text-sm font-medium hover:text-primary">Dashboard</a>
+      </div>
+    </div>
+    <div class="flex flex-1 justify-end gap-4 items-center">
+      <div class="flex gap-2">
+        
+        <!-- Current user avatar -->
+        <div class="bg-center bg-cover rounded-full h-10 w-10 border-2 border-primary"
+             style='background-image: url("{{ current_user.avatar_url }}");'></div>
+      </div>
+    </div>
+  </header>
+
+<main class="flex-1 flex justify-center py-8 px-4 lg:px-12">
+  <div class="layout-content-container flex flex-col lg:flex-row gap-8 w-full max-w-[1500px]">
+
+    <!-- Left Panel: Profile -->
+    <aside class="w-full lg:w-[380px] flex flex-col gap-6 sticky lg:top-24 h-fit">
+      <div class="bg-white dark:bg-[#1a2e15] rounded-xl border border-[#dee6db] dark:border-[#2d3a28] shadow-sm p-6">
+        <div class="flex flex-col items-center text-center gap-4">
+          <div class="size-20 rounded-full bg-center bg-cover border-4 border-primary"
+               style='background-image: url("{{ current_user.avatar_url }}");'></div>
+          <div>
+            <h3 class="font-bold text-lg text-[#131811] dark:text-white">{{ current_user.name }}</h3>
+            <p class="text-xs text-[#6b8961] dark:text-[#a0c294]">
+              {{ current_user.university }} • Year {{ current_user.year_of_study }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Feed -->
+    <section class="flex-1 flex flex-col gap-6 max-w-[700px] overflow-y-auto">
+      <div class="flex items-center justify-between px-4 lg:px-0">
+        <div>
+          <h2 class="text-2xl font-bold text-[#131811] dark:text-white">Community Hub</h2>
+          <p class="text-sm text-[#6b8961] dark:text-[#a0c294]">Join the conversation on student finance</p>
+        </div>
+      </div>
+
+
+      <!-- Posts Loop -->
+      <div id="communityPosts" class="flex flex-col gap-6">
+        {% for post in posts %}
+        <div class="bg-white dark:bg-[#1a2e15] rounded-xl border border-[#dee6db] 
+                    dark:border-[#2d3a28] p-6 shadow-sm w-full">
+          
+          <!-- Post header -->
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex gap-3 items-center">
+              <div class="size-10 rounded-full bg-center bg-cover"
+                   style='background-image: url("{{ post.user.avatar_url }}");'></div>
+              <div class="flex flex-col">
+                <h4 class="text-sm font-bold text-[#131811] dark:text-white">{{ post.user.name }}</h4>
+                <p class="text-xs text-[#6b8961] dark:text-[#a0c294]">
+                  {{ post.created_at.strftime("%b %d, %Y %H:%M") }} • {{ post.user.university }}
+                </p>
+              </div>
+            </div>
+            <button class="text-[#6b8961]"><span class="material-symbols-outlined">more_horiz</span></button>
+          </div>
+
+          <!-- Post content -->
+          <div class="text-[#131811] dark:text-[#f1f4f0] leading-relaxed mb-4">
+            <p>{{ post.content }}</p>
+          </div>
+          <!-- Show comments -->
+          {% if post.comments %}
+          <div class="mt-3 space-y-2">
+            {% for comment in post.comments %}
+              <p class="text-sm text-gray-700 dark:text-gray-300">
+                <strong>{{ comment.user.name }}</strong>: {{ comment.content }}
+              </p>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Composer -->
+    <aside class="w-full lg:w-[350px] flex flex-col gap-6 sticky lg:top-24 h-fit">
+      <div class="bg-white dark:bg-[#1a2e15] rounded-xl border border-[#dee6db] dark:border-[#2d3a28] shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-[#dee6db] dark:border-[#2d3a28] flex justify-between items-center">
+          <h3 class="font-bold text-[#131811] dark:text-white">Create Post</h3>
+          <span class="text-[10px] text-[#6b8961] dark:text-[#a0c294] uppercase font-bold tracking-widest">
+            Posting as {{ current_user.name }}
+          </span>
+        </div>
+        <form method="POST" action="{{ url_for('community') }}" class="p-4 flex flex-col gap-4">
+          <textarea name="content"
+                    class="w-full min-h-[120px] border-none focus:ring-0 bg-transparent text-[#131811] dark:text-white placeholder:text-[#bfceba] resize-none text-base"
+                    placeholder="Share a financial tip or ask a question about budgeting..."></textarea>
+          <button type="submit"
+                  class="bg-primary text-[#131811] px-6 py-2 rounded-lg font-bold text-sm shadow-[0_4px_0_0_#2ea309] active:translate-y-1 active:shadow-none transition-all">
+            Post Now
+          </button>
+        </form>
+      </div>
+      <a href="{{ url_for('logout') }}"
+     class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors">
+     Logout
+  </a>
+    </aside>
+  </div>
+</main>
+<!-- MobileBottom Navigation (Only visible on small screens) -->
+<div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1a2e15] border-t border-[#dee6db] dark:border-[#2d3a28] flex justify-around py-3 md:hidden z-50">
+<button class="text-primary"><span class="material-symbols-outlined">home</span></button>
+<button class="text-[#6b8961]"><span class="material-symbols-outlined">forum</span></button>
+<button class="bg-primary text-[#131811] rounded-full p-2 -mt-8 border-4 border-background-light dark:border-background-dark"><span class="material-symbols-outlined">add</span></button>
+<button class="text-[#6b8961]"><span class="material-symbols-outlined">school</span></button>
+<button class="text-[#6b8961]"><span class="material-symbols-outlined">person</span></button>
+</div>
+<script>
+  async function refreshCommunityPosts() {
+    try {
+      const response = await fetch("{{ url_for('community') }}");
+      const html = await response.text();
+
+      // Parse the returned HTML and extract the posts container
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const newPosts = doc.getElementById("communityPosts");
+
+      // Replace current posts with updated ones
+      document.getElementById("communityPosts").innerHTML = newPosts.innerHTML;
+    } catch (err) {
+      console.error("Failed to refresh posts:", err);
+    }
+  }
+
+  // Refresh every 2 seconds
+  setInterval(refreshCommunityPosts, 2000);
+</script>
+</body></html>

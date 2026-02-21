@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tajirisha Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#46ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#142210",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .kenyan-pattern-border {
+            border-image-source: url("https://www.transparenttextures.com/patterns/az-subtle.png");
+            border-image-slice: 30;
+            border-image-repeat: repeat;
+            border: 4px solid #4ade8022;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#131811] dark:text-[#f1f4f0] font-display">
+<div class="flex h-screen overflow-hidden">
+<aside class="w-20 lg:w-64 border-r border-[#e0ede6] dark:border-[#1a2e21] bg-white dark:bg-[#0d1812] flex flex-col justify-between py-6 shrink-0 transition-all">
+<div class="flex flex-col gap-8">
+<div class="px-6 flex items-center gap-3">
+<div class="bg-primary rounded-lg size-10 flex items-center justify-center text-slate-900">
+<span class="material-symbols-outlined font-bold">account_balance</span>
+</div>
+<div class="hidden lg:flex flex-col">
+<h1 class="text-[#1a2e21] dark:text-white text-lg font-bold leading-tight">Tajirisha</h1>
+<p class="text-[#4b6b58] text-xs font-normal">Student Portal</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 px-3">
+  <!-- Dashboard -->
+  <a href="{{ url_for('dashboard') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/15 text-primary-dark cursor-pointer">
+    <span class="material-symbols-outlined">dashboard</span>
+    <p class="hidden lg:block text-sm font-bold">Dashboard</p>
+  </a>
+
+  <!-- Savings -->
+  <a href="{{ url_for('savings') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg text-[#4b6b58] hover:bg-primary/5 dark:hover:bg-white/5 cursor-pointer">
+    <span class="material-symbols-outlined">savings</span>
+    <p class="hidden lg:block text-sm font-medium">Savings</p>
+  </a>
+
+  <!-- Simulations -->
+  <a href="{{ url_for('simulation') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg text-[#4b6b58] hover:bg-primary/5 dark:hover:bg-white/5 cursor-pointer">
+    <span class="material-symbols-outlined">analytics</span>
+    <p class="hidden lg:block text-sm font-medium">Simulations</p>
+  </a>
+
+  <!-- Community -->
+  <a href="{{ url_for('community') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg text-[#4b6b58] hover:bg-primary/5 dark:hover:bg-white/5 cursor-pointer">
+    <span class="material-symbols-outlined">military_tech</span>
+    <p class="hidden lg:block text-sm font-medium">Community</p>
+  </a>
+
+  <!-- Settings -->
+  <a href="{{ url_for('settings') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg text-[#4b6b58] hover:bg-primary/5 dark:hover:bg-white/5 cursor-pointer">
+    <span class="material-symbols-outlined">settings</span>
+    <p class="hidden lg:block text-sm font-medium">Settings</p>
+  </a>
+
+  <!-- Budget Creator -->
+  <a href="{{ url_for('budget') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg text-[#4b6b58] hover:bg-primary/5 dark:hover:bg-white/5 cursor-pointer">
+    <span class="material-symbols-outlined">account_balance_wallet</span>
+    <p class="hidden lg:block text-sm font-medium">Budget Creator</p>
+  </a>
+
+  <!-- Lessons -->
+  <a href="{{ url_for('lessons') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg text-[#4b6b58] hover:bg-primary/5 dark:hover:bg-white/5 cursor-pointer">
+    <span class="material-symbols-outlined">menu_book</span>
+    <p class="hidden lg:block text-sm font-medium">Lessons</p>
+  </a>
+</nav>
+
+</div>
+<div class="px-3">
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-primary text-slate-900 text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary-dark transition-colors">
+<span class="hidden lg:block truncate">2026 Copyright</span>
+</button></div></aside>
+{% if success %}
+  <div id="success-banner" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+    {{ success }}
+  </div>
+{% endif %}
+<main class="flex-1 overflow-y-auto">
+<div class="max-w-6xl mx-auto p-6 lg:p-10">
+<header class="flex flex-wrap justify-between items-center gap-4 mb-10">
+  <!-- Left: Greeting -->
+  <div class="flex flex-col gap-1">
+    <h2 class="text-[#1a2e21] dark:text-white text-2xl font-black tracking-tight">
+      Habari, {{ user.name }}!
+    </h2>
+    <p class="text-[#4b6b58] text-base">Track your Big Wins and financial growth today.</p>
+  </div>
+
+  <!-- Right: Balance + Avatar + Logout -->
+  <div class="bg-white dark:bg-[#0d1812] border border-[#e0ede6] dark:border-[#1a2e21] rounded-xs px-6 py-3 flex items-center gap-6 shadow-sm">
+    <!-- Balance -->
+    <div class="flex flex-col items-end">
+      <span class="text-lg font-bold text-primary-dark">
+        Savings balance: KSh {{ "{:,.2f}".format(user.balance) }}
+      </span>
+    </div>
+
+    <!-- Divider -->
+    <div class="h-8 w-[1px] bg-[#e0ede6] dark:bg-[#1a2e21]"></div>
+
+    <!-- Avatar -->
+    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/20"
+         style='background-image: url("{{ user.avatar_url or "https://api.dicebear.com/9.x/adventurer/svg?seed=placeholder" }}");'>
+    </div>
+
+    <!-- Logout Button -->
+    <a href="{{ url_for('logout') }}"
+       class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors">
+       Logout
+    </a>
+  </div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 space-y-8">
+<section class="bg-white dark:bg-[#0d1812] rounded-xl overflow-hidden shadow-md border-b-4 border-primary">
+<div class="p-8">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="inline-block px-3 py-1 bg-primary/20 text-primary-dark text-[10px] font-bold uppercase tracking-widest rounded mb-2">Current Big Goal</span>
+<h3 class="text-2xl font-bold text-[#1a2e21] dark:text-white">{{ user.goal }}</h3>
+</div>
+<div class="bg-background-light dark:bg-background-dark p-3 rounded-lg text-primary-dark">
+<span class="material-symbols-outlined">emoji_events</span>
+</div>
+</div>
+{% set _goal_amt = user.goal_amount if (user.goal_amount is not none and user.goal_amount != 0) else 0 %}
+<div class="flex flex-col gap-4">
+  <div class="flex justify-between items-end">
+    <p class="text-3xl font-black text-[#1a2e21] dark:text-white">
+      KSh {{ "{:,.2f}".format(user.balance) }}
+      <span class="text-sm font-normal text-[#4b6b58]">/ KSh {{ "{:,.2f}".format(user.goal_amount if user.goal_amount is not none else 0) }}</span>
+    </p>
+    <p class="text-primary-dark text-lg font-bold">
+      {{ ((user.balance / _goal_amt * 100)|round(0)) if _goal_amt else 0 }}%
+    </p>
+  </div>
+  <div class="h-4 w-full bg-[#f0f7f3] dark:bg-[#1a2e21] rounded-full overflow-hidden">
+    <div class="h-full bg-primary rounded-full transition-all duration-1000"
+         style="width: {{ ((user.balance / _goal_amt * 100)|round(0)) if _goal_amt else 0 }}%;">
+    </div>
+  </div>
+<div class="flex items-center gap-2 text-[#4b6b58] text-sm italic">
+<span class="material-symbols-outlined text-sm">schedule</span>
+{% set _progress = ((user.balance / _goal_amt * 100)|round(0)) if _goal_amt else 0 %}
+{% if _progress >= 100 %}
+  <p class="text-primary font-semibold">🎉 Congratulations, you can remove this goal now!</p>
+{% elif _progress > 0 %}
+  <p>You're on track to reach this goal by {{ user.goal_deadline_str }}!</p>
+{% else %}
+  <p>Create a goal first. The figure above is how much you have saved.</p>
+{% endif %}
+</div>
+</div>
+<div class="mt-8 flex gap-3">
+<a href="{{ url_for('budget') }}" 
+   class="bg-primary text-slate-900 font-bold py-3 px-6 rounded-lg text-sm flex-1 flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors">
+  <span class="material-symbols-outlined">payments</span>
+  Plan Your expenses through our Budget
+</a>
+
+<a href="{{ url_for('savings') }}" 
+   class="bg-primary text-slate-900 font-bold py-3 px-6 rounded-lg text-sm flex-1 flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors">
+  <span class="material-symbols-outlined">add_circle</span>
+   Create a Goal through our Savings Planner
+</a>
+</div>
+</div>
+</section>
+
+<div class="flex items-center justify-between mb-4 px-1">
+<h3 class="text-xl font-bold text-[#1a2e21] dark:text-white">Investment Simulations</h3>
+<a class="text-primary-dark text-xs font-bold uppercase tracking-wider flex items-center gap-1 hover:underline" 
+  href="{{ url_for('simulation') }}">
+  Explore More <span class="material-symbols-outlined text-xs">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-white dark:bg-[#0d1812] p-5 rounded-xl border border-[#e0ede6] dark:border-[#1a2e21] hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-10 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">S&amp;P 500 Entry</h4>
+<p class="text-xs text-[#4b6b58]">High Growth Risk</p>
+</div>
+</div>
+<p class="text-xs text-[#4b6b58] mb-4">Simulate KSh 5,000 monthly for 5 years.</p>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-bold text-[#1a2e21] dark:text-white">+KSh Gain</span>
+<span class="text-[10px] text-primary-dark font-bold uppercase">Estimated</span>
+</div>
+</div>
+<div class="bg-white dark:bg-[#0d1812] p-5 rounded-xl border border-[#e0ede6] dark:border-[#1a2e21] hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-10 bg-blue-50 dark:bg-blue-950/30 rounded-lg flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">Fixed Deposit</h4>
+<p class="text-xs text-[#4b6b58]">Guaranteed Return</p>
+</div>
+</div>
+<p class="text-xs text-[#4b6b58] mb-4">Simulate KSh 10,000 lock for 12 months.</p>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-bold text-[#1a2e21] dark:text-white">+KSh Gain</span>
+<span class="text-[10px] text-primary-dark font-bold uppercase">Guaranteed</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<aside class="space-y-8">
+  <section class="bg-white dark:bg-[#0d1812] rounded-xl border border-[#e0ede6] dark:border-[#1a2e21] overflow-hidden">
+    <div class="p-4 border-b border-[#e0ede6] dark:border-[#1a2e21]">
+      <h3 class="text-sm font-bold">Quick Budget Summary</h3>
+    </div>
+
+    <div class="p-4 space-y-4">
+      <div class="bg-background-light dark:bg-background-dark p-3 rounded-lg text-center border border-primary/20">
+        <p class="text-[10px] text-[#4b6b58] font-bold uppercase tracking-widest mb-1">Current Portfolio</p>
+        <p class="text-2xl font-black">KSh {{ "{:,.2f}".format(user.balance) }}</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#0d1812] p-3 rounded-lg border">
+        <p class="text-[10px] text-[#4b6b58] font-bold uppercase tracking-widest mb-1">Total Expenses</p>
+        <p class="text-xl font-black text-red-500">KSh {{ "{:,.2f}".format(user.total_expenses) }}</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#0d1812] p-3 rounded-lg border">
+        <p class="text-[10px] text-[#4b6b58] font-bold uppercase tracking-widest mb-1">Leftover Funds</p>
+        <p class="text-xl font-black text-primary">KSh {{ "{:,.2f}".format(user.leftover_funds) }}</p>
+      </div>
+    </div>
+  </section>
+</aside>
+</div>
+</div>
+</main>
+</div>
+
+<footer id="dashboardFooter"
+        class="fixed bottom-0 left-0 w-full py-6 text-center text-zinc-500 dark:text-zinc-600 text-xs bg-white dark:bg-background-dark transition-transform duration-300 translate-y-full">
+  <p>© 2024 Tajirisha Kenya. Empowering your financial future.</p>
+  <div class="mt-2 flex justify-center gap-4 font-medium">
+    <a class="hover:text-primary" href="#">Privacy Policy</a>
+    <a class="hover:text-primary" href="#">Terms of Service</a>
+    <a class="hover:text-primary" href="#">Security</a>
+  </div>
+</footer>
+
+<script>
+  let lastScrollTop = 0;
+  const footer = document.getElementById("dashboardFooter");
+
+  window.addEventListener("scroll", function() {
+    let st = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (st > lastScrollTop) {
+      // Scrolling down → show footer
+      footer.classList.remove("translate-y-full");
+    } else {
+      // Scrolling up → hide footer
+      footer.classList.add("translate-y-full");
+    }
+    lastScrollTop = st <= 0 ? 0 : st; // avoid negative values
+  }, false);
+</script>
+<script>
+  setTimeout(() => {
+    const banner = document.getElementById("success-banner");
+    if (banner) {
+      banner.style.transition = "opacity 0.5s ease";
+      banner.style.opacity = "0";
+      setTimeout(() => banner.remove(), 500);
+    }
+  }, 4000); // disappears after 4 seconds
+</script>
+</body></html>

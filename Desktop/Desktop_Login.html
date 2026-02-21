@@ -1,0 +1,323 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tajirisha - Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#46ec13",
+              "accent-gold": "#D4AF37",
+              "accent-red": "#8B0000",
+              "background-light": "#f6f8f6",
+              "background-dark": "#142210",
+            },
+            fontFamily: {
+              display: ["Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Lexend", sans-serif;
+      }
+      .form-input:focus {
+        border-color: #46ec13 !important;
+        box-shadow: 0 0 0 1px #46ec13 !important;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col"
+  >
+    <header
+      class="flex items-center justify-between whitespace-nowrap border-b border-solid border-neutral-200 dark:border-neutral-800 px-10 py-3 bg-white dark:bg-zinc-900"
+    >
+      <div class="flex items-center gap-4 text-[#131811] dark:text-white">
+        <div class="size-6 text-primary">
+          <svg
+            fill="none"
+            viewbox="0 0 48 48"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clip-rule="evenodd"
+              d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z"
+              fill="currentColor"
+              fill-rule="evenodd"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">
+          Tajirisha
+        </h2>
+      </div>
+      <div class="flex flex-1 justify-end gap-8">
+      </div>
+    </header>
+    <main
+  class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-background-light to-zinc-200 dark:from-background-dark dark:to-black"
+>
+  <div
+    class="w-full max-w-[800px] bg-white dark:bg-zinc-900 rounded-xl shadow-2xl overflow-hidden border border-neutral-100 dark:border-neutral-800 flex flex-col"
+  >
+    <div
+      class="bg-zinc-50 dark:bg-zinc-800/50 px-8 py-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between"
+    >
+      <div>
+        <h1 class="text-2xl font-bold text-[#131811] dark:text-white">
+          Welcome!
+        </h1>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          {% if register %}
+            Create your account to get started.
+          {% else %}
+            Ready to build your wealth? Login to continue.
+          {% endif %}
+        </p>
+      </div>
+      <div class="hidden md:block">
+        <span
+          class="text-accent-gold font-bold text-xs uppercase tracking-widest border border-accent-gold/30 px-3 py-1 rounded-full"
+        >Secure Access</span>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+   <!-- Success/Error Messages -->
+{% if login_success %}
+  <div id="success-banner" class="bg-green-100 text-green-700 px-4 py-2 text-sm font-medium rounded">
+    {{ success }}
+  </div>
+{% endif %}
+
+    <!-- Login/Register Form -->
+    <form id="loginForm" method="POST">
+      <div class="p-8 space-y-6">
+            <!-- Error Banner -->
+        {% if error %}
+        <div id="error-banner" class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+          {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- Email -->
+        <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-10">
+          <label class="w-full md:w-1/3 text-[#131811] dark:text-zinc-200 font-medium text-base">
+            Email Address
+            <input
+              class="form-input flex-1 rounded-lg border border-neutral-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-[#131811] dark:text-white h-12 px-4 placeholder:text-zinc-400 focus:outline-none transition-all"
+              placeholder="e.g., mwangi@example.ke"
+              type="email"
+              name="email"
+              required
+            />
+          </label>
+        </div>
+
+        <!-- Password -->
+        <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-10">
+          <div class="w-full md:w-1/3">
+            <label class="text-[#131811] dark:text-zinc-200 font-medium text-base">Password</label>
+          </div>
+          <div class="flex-1">
+            <div class="relative flex items-center">
+              <input
+                class="form-input w-full rounded-lg border border-neutral-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-[#131811] dark:text-white h-12 px-4 pr-12 placeholder:text-zinc-400 focus:outline-none transition-all"
+                placeholder="••••••••"
+                type="password"
+                name="password"
+                required
+              />
+            </div>
+          </div>
+          <p id="password-error"
+   class="text-accent-red text-xs mt-2 flex items-center gap-1 font-medium"
+   style="display:none;">
+</p>
+        </div>
+        {% if register %}
+  <div class="mt-2">
+    <div id="strength-bar" class="h-2 w-full bg-neutral-200 rounded"></div>
+    <p id="strength-text" class="text-xs mt-1 text-zinc-500"></p>
+  </div>
+{% endif %}
+
+{% if register %}
+  <!-- Year of Study (only for registration) -->
+  <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-10">
+    <label class="w-full md:w-1/3 text-[#131811] dark:text-zinc-200 font-medium text-base">
+      Year of Study
+    </label>
+    <select
+      class="form-input flex-1 rounded-lg border border-neutral-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-[#131811] dark:text-white h-12 px-4 focus:outline-none transition-all appearance-none"
+      name="year_of_study"
+      required
+    >
+      <option value="">Select your year</option>
+      <option value="1">Year 1</option>
+      <option value="2">Year 2</option>
+      <option value="3">Year 3</option>
+      <option value="4">Year 4</option>
+      <option value="pg">Postgraduate</option>
+    </select>
+  </div>
+
+  <!-- University (new required field) -->
+  <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-10 mt-4">
+    <label class="w-full md:w-1/3 text-[#131811] dark:text-zinc-200 font-medium text-base">
+      University
+    </label>
+    <select
+      class="form-input flex-1 rounded-lg border border-neutral-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-[#131811] dark:text-white h-12 px-4 focus:outline-none transition-all appearance-none"
+      name="university"
+      required
+    >
+      <option value="">Select your university</option>
+      {% for uni in [
+        "Alupe University","Chuka University","Dedan Kimathi University of Technology","Egerton University",
+        "Garissa University","Jaramogi Oginga Odinga University of Science and Technology",
+        "Jomo Kenyatta University of Agriculture & Technology (JKUAT)","Kaimosi Friends University","Karatina University",
+        "Kenyatta University","Kibabii University","Kirinyaga University","Kisii University","Laikipia University",
+        "Machakos University","Maasai Mara University","Maseno University","Masinde Muliro University of Science and Technology",
+        "Meru University of Science and Technology","Moi University","Multi Media University","Murang'a University of Technology",
+        "Pwani University","Rongo University","South Eastern Kenya University","Taita Taveta University",
+        "Technical University of Mombasa","Technical University of Kenya","The Co-operative University of Kenya","Tharaka University",
+        "University of Eldoret","University of Embu","University of Kabianga","University of Nairobi",
+        "National Defence University","Adventist University of Africa","Africa International University","Africa Nazarene University",
+        "Aga Khan University","AMREF International University","Catholic University Of Eastern Africa","Daystar University",
+        "East African University","GRETSA University","International Leadership University","Kabarak University","KCA University",
+        "Kenya Methodist University","Kenya Highlands University","Lukenya University","Mount Kenya University",
+        "Pan Africa Christian University","Pioneer International University","RAF International University","Riara University",
+        "Scott Christian University","St Paul's University","Strathmore University","The Presbyterian University of EA",
+        "Umma University","United States International University – Africa","University of Eastern Africa – Baraton","Zetech University",
+        "Pan African University Institute for Basic Sciences Technology and Innovation"
+      ] %}
+        <option value="{{ uni }}">{{ uni }}</option>
+      {% endfor %}
+    </select>
+  </div>
+{% endif %}
+
+      <!-- Buttons -->
+      <div class="bg-zinc-50 dark:bg-zinc-800/50 px-8 py-6 border-t border-neutral-100 dark:border-neutral-800 flex flex-col md:flex-row md:justify-end items-center gap-4">
+        {% if register %}
+          <button type="submit" formaction="{{ url_for('register') }}"
+            onclick="return validatePassword(event, 'loginForm')"
+            class="w-full md:w-auto px-6 py-3 rounded-lg text-sm font-bold text-zinc-600 dark:text-zinc-300 hover:text-accent-gold transition-colors">
+            Create Account
+          </button>
+          <a href="{{ url_for('login') }}" class="text-sm text-primary hover:underline">Already have an account? Log in</a>
+        {% else %}
+          <button type="submit" formaction="{{ url_for('login') }}"
+            class="w-full md:w-[160px] bg-primary hover:bg-primary/90 text-black px-6 py-3 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+            <span>Log In</span>
+            <span class="material-symbols-outlined text-base">login</span>
+          </button>
+          <a href="{{ url_for('register') }}" class="text-sm text-primary hover:underline">Create an account</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</main>
+    <!--footer id="dashboardFooter"
+        class="fixed bottom-0 left-0 w-full py-6 text-center text-zinc-500 dark:text-zinc-600 text-xs bg-white dark:bg-background-dark transition-transform duration-300 translate-y-full">
+  <p>© 2024 Tajirisha Kenya. Empowering your financial future.</p>
+  <div class="mt-2 flex justify-center gap-4 font-medium">
+    <a class="hover:text-primary" href="#">Privacy Policy</a>
+    <a class="hover:text-primary" href="#">Terms of Service</a>
+    <a class="hover:text-primary" href="#">Security</a>
+  </div>
+</footer-->
+
+<script>
+  const passwordInput = document.querySelector('input[name="password"]');
+  const strengthBar = document.getElementById("strength-bar");
+  const strengthText = document.getElementById("strength-text");
+
+  passwordInput.addEventListener("input", () => {
+    const val = passwordInput.value;
+    let strength = 0;
+
+    // Rules
+    if (val.length >= 8) strength++;
+    if (/[A-Z]/.test(val)) strength++;
+    if (/[a-z]/.test(val)) strength++;
+    if (/[0-9]/.test(val)) strength++;
+    if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+    // Update bar + text
+    switch (strength) {
+      case 0:
+      case 1:
+        strengthBar.style.background = "red";
+        strengthText.textContent = "Very Weak";
+        break;
+      case 2:
+        strengthBar.style.background = "orange";
+        strengthText.textContent = "Weak";
+        break;
+      case 3:
+        strengthBar.style.background = "yellow";
+        strengthText.textContent = "Medium";
+        break;
+      case 4:
+        strengthBar.style.background = "lightgreen";
+        strengthText.textContent = "Strong";
+        break;
+      case 5:
+        strengthBar.style.background = "green";
+        strengthText.textContent = "Very Strong";
+        break;
+    }
+  });
+</script>
+
+<script>
+  // Hide success banner after 3 seconds
+  setTimeout(() => {
+    const successBanner = document.getElementById("success-banner");
+    if (successBanner) {
+      successBanner.style.transition = "opacity 0.5s ease";
+      successBanner.style.opacity = "0";
+      setTimeout(() => successBanner.remove(), 500); // remove after fade
+    }
+  }, 3000);
+
+  // Hide error banner after 3 seconds (optional, you can keep errors longer)
+  setTimeout(() => {
+    const errorBanner = document.getElementById("error-banner");
+    if (errorBanner) {
+      errorBanner.style.transition = "opacity 0.5s ease";
+      errorBanner.style.opacity = "0";
+      setTimeout(() => errorBanner.remove(), 500);
+    }
+  }, 3000);
+</script>
+  </body>
+</html>

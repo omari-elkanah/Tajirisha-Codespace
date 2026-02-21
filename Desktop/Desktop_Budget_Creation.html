@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Budget Creation Tool - Tajirisha</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#46ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#142210",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav {
+            background-color: #46ec1320;
+            border-left: 4px solid #46ec13;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#131811] dark:text-white min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-72 bg-white dark:bg-[#1a2e15] border-r border-[#dee6db] dark:border-[#2a3d26] flex flex-col shrink-0">
+<div class="p-6">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 rounded-xl p-2">
+<span class="material-symbols-outlined text-[#131811] dark:text-primary text-3xl">account_balance_wallet</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-xl font-bold leading-none">Tajirisha</h1>
+<p class="text-[#6b8961] text-xs font-normal">Financial Literacy</p>
+</div>
+</div>
+</div>
+
+<nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+  <!-- Dashboard -->
+  <a href="{{ url_for('dashboard') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+    <span class="material-symbols-outlined">dashboard</span>
+    <span class="text-sm font-medium">Dashboard</span>
+  </a>
+
+  <!-- My Budgets (active) -->
+  <a href="{{ url_for('budget') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/15 text-primary-dark">
+    <span class="material-symbols-outlined">wallet</span>
+    <span class="text-sm font-medium">My Budgets</span>
+  </a>
+
+  <!-- My Savings -->
+  <a href="{{ url_for('savings') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+    <span class="material-symbols-outlined">savings</span>
+    <span class="text-sm font-medium">My Savings</span>
+  </a>
+
+  <!-- Financial Lessons -->
+  <a href="{{ url_for('lessons') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+    <span class="material-symbols-outlined">school</span>
+    <span class="text-sm font-medium">Financial Lessons</span>
+  </a>
+
+  <!-- Simulations -->
+  <a href="{{ url_for('simulation') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+    <span class="material-symbols-outlined">analytics</span>
+    <span class="text-sm font-medium">Simulations</span>
+  </a>
+
+  <!-- Community -->
+  <a href="{{ url_for('community') }}"
+     class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+    <span class="material-symbols-outlined">military_tech</span>
+    <span class="text-sm font-medium">Community</span>
+  </a>
+  <div class="flex justify-center">
+  <a href="{{ url_for('logout') }}"
+     class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors">
+     Logout
+  </a>
+</div>
+</nav>
+<div class="p-4 border-t border-[#dee6db] dark:border-[#2a3d26]">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors" href="{{ url_for('settings') }}">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</div>
+</aside>
+
+<main class="flex-1 flex flex-col overflow-hidden">
+  <!-- Header -->
+  <header class="bg-white dark:bg-[#1a2e15] border-bottom border-[#dee6db] dark:border-[#2a3d26] px-8 py-6">
+    <div class="max-w-5xl mx-auto flex justify-between items-end">
+      <div>
+        <h2 class="text-3xl font-black tracking-tight">Create Monthly Budget</h2>
+        <p class="text-[#6b8961] mt-1">
+          Plan your finances for the month ahead ({{ current_month }} {{ current_year }}).
+        </p>
+      </div>
+      <div class="flex gap-3">
+      </div>
+    </div>
+  </header>
+
+  <!-- Scrollable Content -->
+  <div class="flex-1 overflow-y-auto p-8">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Budget Form -->
+      <!-- Section: Expenses -->
+<section class="bg-white dark:bg-[#1a2e15] rounded-xl border border-[#dee6db] dark:border-[#2a3d26] mb-8 overflow-hidden">
+  <div class="p-6 border-b border-[#dee6db] dark:border-[#2a3d26] bg-[#fcfdfc] dark:bg-white/5 flex justify-between items-center">
+    <h3 class="text-lg font-bold flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary">shopping_cart</span>
+      Planned Expenses
+    </h3>
+  </div>
+  <div class="p-6 space-y-6">
+
+    <!-- Existing Expenses -->
+    {% for expense in expenses %}
+    <form method="POST" action="{{ url_for('budget') }}">
+      <input type="hidden" name="budget_id" value="{{ expense.id }}"/>
+      <input type="hidden" name="action" value="delete"/>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pb-6 border-b border-[#f1f4f0] dark:border-white/5">
+        <!-- Expense Name -->
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#6b8961] mb-2">Expense Name</label>
+          <input name="expense_name" type="text" value="{{ expense.category }}"
+                 class="w-full p-3 rounded-lg border border-[#dee6db] dark:border-[#2a3d26] dark:bg-background-dark 
+                        focus:ring-primary focus:border-primary text-sm" readonly/>
+        </div>
+
+        <!-- Amount -->
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#6b8961] mb-2">Amount (KSh)</label>
+          <input name="amount" type="number" value="{{ expense.amount }}"
+                 class="w-full p-3 rounded-lg border border-[#dee6db] dark:border-[#2a3d26] dark:bg-background-dark 
+                        focus:ring-primary focus:border-primary text-sm" readonly/>
+        </div>
+
+        <!-- Notes -->
+        <div class="md:col-span-5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#6b8961] mb-2">Notes</label>
+          <input name="notes" type="text" value="{{ expense.notes }}"
+                 class="w-full p-3 rounded-lg border border-[#dee6db] dark:border-[#2a3d26] dark:bg-background-dark 
+                        focus:ring-primary focus:border-primary text-sm" readonly/>
+        </div>
+
+        <!-- Delete Button -->
+        <div class="md:col-span-1 flex items-end justify-center">
+          <button type="submit" class="p-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+      </div>
+    </form>
+    {% endfor %}
+
+    <!-- Add New Expense -->
+    <form method="POST" action="{{ url_for('budget') }}">
+      <input type="hidden" name="action" value="add"/>
+       <input type="hidden" name="income" value="{{ income }}"/>  <!-- 👈 include income -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pt-6 border-t border-[#f1f4f0] dark:border-white/5">
+        <!-- Expense Name -->
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#6b8961] mb-2">Expense Name</label>
+          <input name="expense_name" type="text" placeholder="e.g. Transport"
+                 class="w-full p-3 rounded-lg border border-[#dee6db] dark:border-[#2a3d26] dark:bg-background-dark 
+                        focus:ring-primary focus:border-primary text-sm"/>
+        </div>
+
+        <!-- Amount -->
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#6b8961] mb-2">Amount (KSh)</label>
+          <input name="amount" type="number" placeholder="0.00"
+                 class="w-full p-3 rounded-lg border border-[#dee6db] dark:border-[#2a3d26] dark:bg-background-dark 
+                        focus:ring-primary focus:border-primary text-sm"/>
+        </div>
+
+        <!-- Notes -->
+        <div class="md:col-span-5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#6b8961] mb-2">Notes</label>
+          <input name="notes" type="text" placeholder="Optional notes"
+                 class="w-full p-3 rounded-lg border border-[#dee6db] dark:border-[#2a3d26] dark:bg-background-dark 
+                        focus:ring-primary focus:border-primary text-sm"/>
+        </div>
+
+        <!-- Add Button -->
+        <div class="md:col-span-1 flex items-end justify-center">
+          <button type="submit" class="p-3 text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+            <span class="material-symbols-outlined">add_circle</span>
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</section>
+    </div>
+  </div>
+
+  <!-- Bottom Summary Bar -->
+  <footer id="dashboardFooter" class="bg-white dark:bg-[#1a2e15] border-t border-[#dee6db] dark:border-[#2a3d26] p-6 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex flex-wrap gap-8 items-center">
+        <div class="flex flex-col">
+          <span class="text-[10px] font-bold uppercase tracking-[0.1em] text-[#6b8961]">Current Portfolio</span>
+          <span class="text-xl font-black">KSh {{ portfolio_balance|comma }}</span>
+        </div>
+        <div class="h-8 w-px bg-[#dee6db] dark:bg-white/10 hidden md:block"></div>
+        <div class="flex flex-col">
+          <span class="text-[10px] font-bold uppercase tracking-[0.1em] text-[#6b8961]">Total Expenses</span>
+          <span class="text-xl font-black text-red-500">KSh {{ total_expenses|comma }}</span>
+        </div>
+        <div class="h-8 w-px bg-[#dee6db] dark:bg-white/10 hidden md:block"></div>
+        <div class="flex flex-col">
+          <span class="text-[10px] font-bold uppercase tracking-[0.1em] text-[#6b8961]">Leftover Funds</span>
+          <span class="text-xl font-black text-primary">KSh {{ leftover_funds|comma }}</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</main>
+
+</div>
+</body></html>

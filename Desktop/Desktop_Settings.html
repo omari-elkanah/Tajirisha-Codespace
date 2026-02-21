@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Tajirisha - Settings</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#46ec13",
+            "background-light": "#f6f8f6",
+            "background-dark": "#142210",
+          },
+          fontFamily: { "display": ["Lexend", "sans-serif"] },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Lexend', sans-serif; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#131811] dark:text-[#f1f4f0] transition-colors duration-200">
+
+  <div class="flex h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 border-r border-[#dee6db] dark:border-[#2d3a28] bg-white dark:bg-[#1a2e15] flex flex-col p-6">
+      <h2 class="text-lg font-bold mb-6 text-primary">Navigation</h2>
+      <nav class="flex flex-col gap-4">
+        <a href="{{ url_for('savings') }}" class="text-sm font-medium hover:text-primary transition-colors">Savings</a>
+        <a href="{{ url_for('budget') }}" class="text-sm font-medium hover:text-primary transition-colors">Budget</a>
+        <a href="{{ url_for('lessons') }}" class="text-sm font-medium hover:text-primary transition-colors">Learning Hub</a>
+        <a href="{{ url_for('simulation') }}" class="text-sm font-medium hover:text-primary transition-colors">Simulations</a>
+        <a href="{{ url_for('community') }}" class="text-sm font-medium hover:text-primary transition-colors">Community</a>
+        <a href="{{ url_for('dashboard') }}" class="text-sm font-medium hover:text-primary transition-colors">Dashboard</a>
+        <a href="{{ url_for('settings') }}" class="text-sm font-medium text-primary border-b-2 border-primary">Settings</a>
+        <a href="{{ url_for('logout') }}"
+       class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors">
+       Logout
+    </a>
+      
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Center Column (Password, Profile, Account Actions) -->
+        <div class="md:col-span-2 space-y-6">
+          <!-- Greeting with Avatar Preview -->
+          <div class="flex items-center gap-4">
+            <img src="{{ user.avatar_url }}" alt="Avatar"
+                 class="w-16 h-16 rounded-full border-2 border-primary"/>
+            <h2 class="text-[#1a2e21] dark:text-white text-4xl font-black tracking-tight">
+              Habari, {{ user.name }}!
+            </h2>
+          </div>
+
+          <!-- Password Change -->
+          <section>
+            <h2 class="text-xl font-bold mb-4 text-primary">Change Password</h2>
+            <form method="POST" class="space-y-4">
+              <input type="hidden" name="action" value="password"/>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Current Password</label>
+                <input type="password" name="current_password" required 
+                      class="form-input w-full rounded-lg h-12 px-4"/>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">New Password</label>
+                <input type="password" id="new_password" name="new_password" required 
+                      class="form-input w-full rounded-lg h-12 px-4"/>
+                
+                <!-- Strength meter -->
+                <div id="password-strength" class="mt-2 text-sm font-medium"></div>
+                <div class="w-full bg-gray-200 rounded h-2 mt-1">
+                  <div id="strength-bar" class="h-2 rounded"></div>
+                </div>
+
+                <!-- Requirements checklist -->
+                <ul id="password-requirements" class="mt-3 text-sm space-y-1">
+                  <li id="req-length" class="text-red-500">❌ At least 8 characters</li>
+                  <li id="req-uppercase" class="text-red-500">❌ At least one uppercase letter</li>
+                  <li id="req-lowercase" class="text-red-500">❌ At least one lowercase letter</li>
+                  <li id="req-number" class="text-red-500">❌ At least one number</li>
+                  <li id="req-special" class="text-red-500">❌ At least one special character</li>
+                </ul>
+              </div>
+
+              <button type="submit" 
+                      class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+                Update Password
+              </button>
+            </form>
+          </section>
+
+          <!-- Profile Update -->
+          <section>
+            <h2 class="text-xl font-bold mb-4 text-primary">Update Profile</h2>
+            <form method="POST" class="space-y-4">
+              <input type="hidden" name="action" value="profile"/>
+              <label class="block text-sm font-medium mb-1">University</label>
+              <select name="university" required
+                      class="form-input w-full rounded-lg border border-neutral-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 h-12 px-4">
+                <option value="">Change your university</option>
+                {% for uni in ["Kenyatta University","University of Nairobi","Moi University","Strathmore University"] %}
+                  <option value="{{ uni }}">{{ uni }}</option>
+                {% endfor %}
+              </select>
+              <div>
+                <label class="block text-sm font-medium mb-1">Year of Study</label>
+                <input type="text" name="year_of_study" required class="form-input w-full rounded-lg h-12 px-4"/>
+              </div>
+              <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+                Update Profile
+              </button>
+            </form>
+          </section>
+
+<!-- Account Actions -->
+<section class="bg-white dark:bg-[#1a2e15] rounded-lg shadow p-6 space-y-4">
+  <h2 class="text-xl font-bold">Account</h2>
+  <button onclick="showDeletePopup()" 
+          class="w-full md:w-auto px-6 py-3 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700">
+    Delete Account
+  </button>
+</section>
+</div>
+<!-- Delete Confirmation Popup -->
+<div id="deletePopup" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-[#1a2e15] rounded-lg shadow-lg p-6 text-center space-y-4">
+    <h3 class="text-lg font-bold text-red-600">Confirm Deletion</h3>
+    <p class="text-sm">Are you sure you want to delete your account? This action cannot be undone.</p>
+    <div class="flex justify-center gap-4">
+      <form method="POST">
+          <input type="hidden" name="action" value="delete">
+          <button type="submit"
+                  class="px-6 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700">
+            Yes, Delete
+          </button>
+      </form>
+      <button onclick="closeDeletePopup()" 
+              class="px-6 py-2 rounded-lg bg-gray-300 text-black font-bold hover:bg-gray-400">
+        Cancel
+      </button>
+    </form>
+    </div>
+  </div>
+</div>
+
+        <!-- Right Column (Avatar Selection with DiceBear) -->
+        <div class="md:col-span-1 space-y-8">
+          <h2 class="text-x1 font bold mb-3 text-primary">Current Avatar</h2>
+          <img src="{{ user.avatar_url }}" alt="Current Avatar"
+               class="w-32 h-32 rounded-full border-4 border-primary"/>
+          <h2 class="text-xl font-bold mb-4 text-primary">Choose Your Avatar</h2>
+      <form method="POST" class="space-y-4">
+        <input type="hidden" name="action" value="avatar"/>
+        <div class="grid grid-cols-2 gap-4">
+          {% for avatar in [
+            'https://api.dicebear.com/7.x/bottts/svg?seed=Elkanah',
+            'https://api.dicebear.com/7.x/avataaars/svg?seed=Student',
+            'https://api.dicebear.com/7.x/micah/svg?seed=Finance',
+            'https://api.dicebear.com/7.x/pixel-art/svg?seed=Scholar'
+          ] %}
+            <label class="cursor-pointer flex flex-col items-center">
+              <input type="radio" name="avatar_url" value="{{ avatar }}"
+                     {% if user.avatar_url == avatar %}checked{% endif %}/>
+              <img src="{{ avatar }}" class="w-20 h-20 rounded-full border-2
+                   {% if user.avatar_url == avatar %}border-primary{% else %}border-gray-300{% endif %}"/>
+            </label>
+          {% endfor %}
+        </div>
+        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+          Update Avatar
+        </button>
+      </form>
+    </aside>
+  </div>
+</main>
+
+
+  <script>
+    function showSavePopup() {
+      document.getElementById("savePopup").classList.remove("hidden");
+    }
+    function redirectDashboard() {
+      window.location.href = "Desktop_Dashboard.html";
+    }
+    function showDeletePopup() {
+      document.getElementById("deletePopup").classList.remove("hidden");
+    }
+    function closeDeletePopup() {
+      document.getElementById("deletePopup").classList.add("hidden");
+    }
+    function confirmDelete() {
+      window.location.href = "Desktop_Login.html";
+    }
+  </script>
+  <script>
+  const passwordInput = document.getElementById("new_password");
+  const strengthText = document.getElementById("password-strength");
+  const strengthBar = document.getElementById("strength-bar");
+
+  const reqLength = document.getElementById("req-length");
+  const reqUppercase = document.getElementById("req-uppercase");
+  const reqLowercase = document.getElementById("req-lowercase");
+  const reqNumber = document.getElementById("req-number");
+  const reqSpecial = document.getElementById("req-special");
+
+  passwordInput.addEventListener("input", () => {
+    const value = passwordInput.value;
+    let strength = 0;
+
+    // Criteria checks
+    const lengthOK = value.length >= 8;
+    const upperOK = /[A-Z]/.test(value);
+    const lowerOK = /[a-z]/.test(value);
+    const numberOK = /[0-9]/.test(value);
+    const specialOK = /[^A-Za-z0-9]/.test(value);
+
+    // Update checklist
+    reqLength.textContent = (lengthOK ? "✅" : "❌") + " At least 8 characters";
+    reqLength.className = lengthOK ? "text-green-600" : "text-red-500";
+
+    reqUppercase.textContent = (upperOK ? "✅" : "❌") + " At least one uppercase letter";
+    reqUppercase.className = upperOK ? "text-green-600" : "text-red-500";
+
+    reqLowercase.textContent = (lowerOK ? "✅" : "❌") + " At least one lowercase letter";
+    reqLowercase.className = lowerOK ? "text-green-600" : "text-red-500";
+
+    reqNumber.textContent = (numberOK ? "✅" : "❌") + " At least one number";
+    reqNumber.className = numberOK ? "text-green-600" : "text-red-500";
+
+    reqSpecial.textContent = (specialOK ? "✅" : "❌") + " At least one special character";
+    reqSpecial.className = specialOK ? "text-green-600" : "text-red-500";
+
+    // Strength calculation
+    if (lengthOK) strength++;
+    if (upperOK) strength++;
+    if (lowerOK) strength++;
+    if (numberOK) strength++;
+    if (specialOK) strength++;
+
+    // Update strength meter
+    let strengthLabel = "";
+    let barColor = "";
+
+    switch (strength) {
+      case 0:
+      case 1:
+        strengthLabel = "Weak";
+        barColor = "bg-red-500";
+        break;
+      case 2:
+      case 3:
+        strengthLabel = "Medium";
+        barColor = "bg-yellow-500";
+        break;
+      case 4:
+        strengthLabel = "Strong";
+        barColor = "bg-green-500";
+        break;
+      case 5:
+        strengthLabel = "Very Strong";
+        barColor = "bg-blue-600";
+        break;
+    }
+
+    strengthText.textContent = `Strength: ${strengthLabel}`;
+    strengthBar.className = `h-2 rounded ${barColor}`;
+    strengthBar.style.width = `${(strength / 5) * 100}%`;
+  });
+</script>
+</body>
+</html>
